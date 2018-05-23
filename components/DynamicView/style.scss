@@ -1,0 +1,44 @@
+.nasa-dynamic-view {
+  .dynamic-view-col {
+    display: flex;
+    align-content: flex-start;
+    padding: 6px 0;
+    span.dynamic-view-title {
+      max-width: 40%;
+    }
+    span.dynamic-view-value {
+      flex-grow: 1;
+      margin-left: 6px;
+      &.dynamic-view-value-offset {
+        margin-left: 0px;
+      }
+    }
+  }
+  .clear {
+    clear: both;
+  }
+
+  &.nasa-dynamic-view-align-colon {
+    span.dynamic-view-title {
+      max-width: 100%;
+      text-align: right;
+      flex-shrink: 0;
+    }
+  }
+
+  &.nasa-dynamic-view-small {
+    .dynamic-view-col {
+      padding: 0px 0;
+      span.dynamic-view-value {
+        margin-left: 6px;
+      }
+    }
+  }
+
+  /* test css */
+  &.test {
+    .dynamic-view-col {
+      border: 1px solid #ddd;
+    }
+  }
+}

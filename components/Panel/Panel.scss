@@ -1,0 +1,50 @@
+.nasa-panel {
+  .panel-title {
+    display: block;
+    position: relative;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    color: #666;
+    padding-left: 12px;
+    &:before {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 4px;
+      height: 16px;
+      margin-top: -7px;
+      background: #666;
+      border-radius: 2px;
+      content: '';
+    }
+    .panel-title-right {
+      float: right;
+    }
+    i.anticon {
+      font-size: 14px;
+      color: #ccc;
+    }
+  }
+  .panel-content {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    color: #333;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    .panel-title {
+      height: 50px;
+      line-height: 50px;
+      font-size: 16px;
+      padding: 0;
+      border: 0;
+      margin: -20px 0 0 0;
+      color: #333;
+      &:before {
+        display: none;
+      }
+    }
+  }
+}
