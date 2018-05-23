@@ -1,10 +1,12 @@
 # nasa-ui
-NETS nasa front-end Component Library, base on antd
+NETS nasa front-end Component Library, base on antd  [https://milolu.github.io/nasa-ui/](https://milolu.github.io/nasa-ui/)
 
 ## api
 
 ## 组件添加
 
+## 版本要求
+> React 16+，antd 3+
 
 ## 样式定义规则（在BEM做一定的调整）
 * 必须以.nasa

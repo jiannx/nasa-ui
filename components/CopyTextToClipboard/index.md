@@ -1,11 +1,14 @@
 # 复制功能
 
-## api
-* text 点击后复制的文本
-* successCallback 成功复制回调
-* failCallback 失败回调
-  
-```
+## Api
+* text(String): 点击后复制的文本
+* \[successCallback](Func): 成功复制回调
+* \[failCallback](Func): 失败回调
+* \[title](String): hover显示文本，children存在时，该参数无效
+
+
+## 示例
+```jsx
 <CopyTextToClipboard 
   text={`用户名: ${detail.username}\n密码: ${detail.password}`}
 />

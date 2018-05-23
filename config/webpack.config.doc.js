@@ -54,7 +54,7 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? 'source-map' : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: [require.resolve('./polyfills'), paths.appIndexJs],
+  entry: [require.resolve('./polyfills'), paths.siteIndexJs],
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -89,6 +89,7 @@ module.exports = {
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
       src: paths.appSrc,
+      'nasa-ui': paths.components,
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
@@ -277,7 +278,7 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      template: paths.testHtml,
+      template: paths.siteHtml,
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -315,7 +316,7 @@ module.exports = {
         // https://github.com/facebookincubator/create-react-app/issues/2488
         ascii_only: true,
       },
-      sourceMap: shouldUseSourceMap,
+      sourceMap: false,
     }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({

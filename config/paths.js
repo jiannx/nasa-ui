@@ -43,13 +43,19 @@ module.exports = {
   dotenv: resolveApp('.env'),
   appBuild: resolveApp('build'),
   appPublic: resolveApp('public'),
-  appHtml: resolveApp('test/index.html'),
-  appIndexJs: resolveApp('test/index.js'),
+  components: resolveApp('components'),
+
+  testHtml: resolveApp('test/index.html'),
+  testIndexJs: resolveApp('test/index.js'),
+  siteHtml: resolveApp('site/index.html'),
+  siteIndexJs: resolveApp('site/index.js'),
+  siteDoc: resolveApp('docs'),
+
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
-  servedPath: getServedPath(resolveApp('package.json')),
+  servedPath: '',
 };

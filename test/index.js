@@ -2,11 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 // import './style/index.scss';
 import { LocaleProvider } from 'antd';
-import { CopyTextToClipboard } from 'src/index.js';
+import { CopyTextToClipboard } from 'nasa-ui';
 
 ReactDOM.render((
   <div>
-
-    <CopyTextToClipboard text="sdfsdf">杀死对方</CopyTextToClipboard>
+    <CopyTextToClipboard text="sdfsdf">test</CopyTextToClipboard>
   </div>
 ), document.getElementById('root'));

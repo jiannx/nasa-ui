@@ -1,2 +1,2 @@
 export CopyTextToClipboard from './CopyTextToClipboard/index.jsx';
-export default {};
+export MarkdownParser from './MarkdownParser/index.jsx';
