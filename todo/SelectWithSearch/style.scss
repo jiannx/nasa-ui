@@ -1,0 +1,87 @@
+.nasa-select-with-search {
+  display: inline-block;
+  min-width: 100px; // 
+  width: 200px;
+  font-size: 12px;
+  box-sizing: border-box;
+  .nasa-select-selected {
+    position: relative;
+    height: 28px;
+    width: 100%;
+    padding: 0 20px 0 8px;
+    line-height: 26px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    span {
+      display: block;
+      float: left;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &:after {
+      display: inline-block;
+      content: '.';
+      visibility: hidden;
+      width: 0;
+    }
+    .anticon-down {
+      position: absolute;
+      right: 6px;
+      top: 8px;
+      color: rgba(0, 0, 0, 0.43);
+      font-size: 11px;
+      transition: all .2s;
+      &.rotate {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  .nasa-select-menu {
+    width: 300px; // height: 400px;
+    background-color: #fff;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    .nasa-select-menu-item {
+      padding: 0 10px;
+      height: 30px;
+      line-height: 30px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      &.check-all {
+        background-color: #f3f3f3;
+      }
+    }
+    div.nasa-select-menu-options {
+      display: block;
+      width: 100%;
+      max-height: 315px;
+      overflow: auto;
+    }
+  }
+  .nasa-select-buttom {
+    width: 100%; // height: 40px;
+    padding: 10px;
+    border-top: 1px solid #d9d9d9;
+    text-align: right;
+  }
+  .nasa-select-menu-search {
+    position: relative;
+    width: 240px;
+    input {
+      // width: 200px !important;
+      padding-right: 20px !important;
+    }
+    .nasa-select-menu-search-clear {
+      position: absolute;
+      right: 34px;
+      top: 18px;
+      z-index: 10;
+      color: #ccc;
+    }
+  }
+}

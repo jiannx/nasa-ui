@@ -1,0 +1,38 @@
+.logo {
+  width: 240px;
+  height: 99%;
+  float: left;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 32px;
+  color: white;
+  background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a);
+  -webkit-animation: hue 20s infinite linear;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none !important;
+}
+
+.ant-menu {
+  .ant-menu-item {
+    padding: 0;
+    &.ant-menu-item-selected {
+      background: transparent;
+    }
+    a {
+      padding: 0 20px;
+      &.active {
+        color: white;
+        background: #1890ff;
+      }
+    }
+  }
+}
+
+@-webkit-keyframes hue {
+  from {
+    -webkit-filter: hue-rotate(0deg);
+  }
+  to {
+    -webkit-filter: hue-rotate(-360deg);
+  }
+}

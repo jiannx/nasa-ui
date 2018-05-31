@@ -1,30 +1,42 @@
-import React, { Component } from 'react';
-import { Tabs } from 'antd';
-import _ from 'lodash';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import { MarkdownParser } from 'nasa-ui';
-import * as NasaUI from 'nasa-ui';
-import CopyMd from '../components/CopyTextToClipboard/index.md';
+import { Route, Switch, Redirect } from 'react-router';
+import { HashRouter, NavLink, Link } from 'react-router-dom';
+import { Layout, Menu } from 'antd';
+import Overview from './Overview';
+import Docs from './Docs';
+import Demo from './Demo';
+import './style.scss';
 
-const TabPane = Tabs.TabPane;
-
-let markdown = {};
-let names = Object.keys(NasaUI);
+const { Header, Content, Footer } = Layout;
 
 ReactDOM.render((
-  <div style={{padding: '20px', overflow: 'auto'}}>
-    <h1>NASA UI Components Doc</h1>
-    <br/>
-    <Tabs
-      // defaultActiveKey="TestDynamicFormEx2"
-      tabPosition={'left'}
-      style={{ minHeight: 800 }}
-    >
-      {names.map(x => 
-        <TabPane tab={x} key={x}>
-          <MarkdownParser src={require(`../components/${x}/index.md`)}></MarkdownParser>
-        </TabPane>
-      )}
-    </Tabs>
-  </div>
+  <HashRouter>
+    <Layout>
+      <Header>
+        <Link className="logo" to="/">Nasa UI</Link>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['2']}
+          style={{ lineHeight: '64px' }}
+        >
+          <Menu.Item key="/"><NavLink to="/" exact>Overview</NavLink></Menu.Item>
+          <Menu.Item key="/docs"><NavLink to="/docs" exact>Doc</NavLink></Menu.Item>
+          <Menu.Item key="/demo"><NavLink to="/demo" exact>Demo</NavLink></Menu.Item>
+        </Menu>
+      </Header>
+      <Content style={{ padding: '0 50px' }}>
+        <Switch>
+          <Route exact path="/" component={Overview} />
+          <Route exact path="/docs" component={Docs}/>
+          <Route exact path="/demo" component={Demo}/>
+          <Route render={() => <div>404</div>}/>
+        </Switch>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>
+        Nasa UI ©2018 Created by Netease
+      </Footer>
+    </Layout>
+  </HashRouter>
 ), document.getElementById('root'));

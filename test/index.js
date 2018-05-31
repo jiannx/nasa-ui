@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 // import './style/index.scss';
 import { LocaleProvider } from 'antd';
-import { CopyTextToClipboard } from 'nasa-ui';
+import { CopyTextToClipboard } from '../lib/index.js';
 
 ReactDOM.render((
   <div>
