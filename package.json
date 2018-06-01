@@ -1,17 +1,19 @@
 {
   "name": "nasa-ui",
-  "version": "0.2.7",
+  "version": "0.2.10",
   "description": "NETS Nasa front-end Component Library, base on antd",
+  "homepage": "https://milolu.github.io/nasa-ui/#/",
   "main": "lib/index.js",
+  "module": "src/index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "clean": "node scripts/clean.js",
-    "build": "SET NODE_ENV=production&& npm run clean && babel src --out-dir lib --source-maps --extensions .es6,.es,.jsx,.js --copy-files --presets=react-app,stage-0",
+    "build-clean": "node scripts/build-clean.js",
+    "build": "SET NODE_ENV=production&& npm run build-clean && babel src --out-dir lib --source-maps --extensions .es6,.es,.jsx,.js --copy-files --presets=react-app,stage-0",
     "doc": "node scripts/doc.js",
-    "publish": "npm run build && npm publish",
+    "push": "npm run build && npm publish",
     "test": "node scripts/test.js --env=jsdom"
   },
   "repository": {
@@ -23,20 +25,22 @@
   "bugs": {
     "url": "https://github.com/milolu/nasa-ui/issues"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "homepage": "https://github.com/milolu/nasa-ui#readme",
   "dependencies": {
-    "antd": "^3.5.3",
-    "axios": "^0.18.0",
+    "antd": "^3.0.0",
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "marked": "^0.4.0",
     "node-sass": "^4.7.2",
     "prop-types": "^15.6.1",
-    "react": "^16.3.2",
-    "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2"
+    "react": "^16.0.0"
   },
   "devDependencies": {
+    "axios": "^0.18.0",
     "autoprefixer": "7.1.6",
     "babel-cli": "^6.26.0",
     "babel-core": "6.26.0",
@@ -69,6 +73,8 @@
     "postcss-loader": "2.0.8",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.3.2",
+    "react-router": "^4.0.0",
+    "react-router-dom": "^4.0.0",
     "sass-loader": "^6.0.6",
     "style-loader": "0.19.0",
     "sw-precache-webpack-plugin": "0.11.4",

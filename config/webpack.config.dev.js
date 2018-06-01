@@ -32,10 +32,7 @@ module.exports = {
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.
-  entry: {
-    test: [require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills'), paths.testIndexJs],
-    site: [require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills'), paths.siteIndexJs],
-  },
+  entry: [require.resolve('react-dev-utils/webpackHotDevClient'), require.resolve('./polyfills'), paths.siteIndexJs],
   output: {
     // Add /* filename */ comments to generated require()s in the output.
     pathinfo: true,
@@ -68,7 +65,6 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      src: paths.appSrc,
       'nasa-ui': paths.components,
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -241,16 +237,9 @@ module.exports = {
     new InterpolateHtmlPlugin(env.raw),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
-      filename: 'test.html',
-      inject: true,
-      template: paths.testHtml,
-      excludeChunks: ['site'],
-    }),
-    new HtmlWebpackPlugin({
       filename: 'index.html',
       inject: true,
       template: paths.siteHtml,
-      excludeChunks: ['test'],
     }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),

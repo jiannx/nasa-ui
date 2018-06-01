@@ -91,7 +91,7 @@ class Echarts extends Component {
         data,
         loading: false
       }, () => {
-        this.state.echarts && this.draw();
+        this.draw();
       });
     }).catch(() => {
       this.setState({ loading: false });
@@ -171,8 +171,8 @@ class Echarts extends Component {
       <div className={`nase-chart ${this.props.className}`} style={this.props.style}>
         <Spin spinning={loading} delay={0} className="spin-loading">
           <div id={this.state.id} style={{width: '100%', height: '100%'}}></div>
-          { this.state.dom && 
-            <div style={{width: '100%', height: '100%', position: 'absolute', left: '0', top: '0'}}>{this.state.dom}</div>
+          { this.state.component && 
+            <div style={{width: '100%', height: '100%', position: 'absolute', left: '0', top: '0'}}>{this.state.component}</div>
           }
         </Spin>
       </div>
