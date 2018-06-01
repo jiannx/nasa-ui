@@ -91,7 +91,7 @@ class Echarts extends Component {
         data,
         loading: false
       }, () => {
-        this.draw();
+        this.state.echarts && this.draw();
       });
     }).catch(() => {
       this.setState({ loading: false });
