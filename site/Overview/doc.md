@@ -1,5 +1,5 @@
 ## 使用方式
-```
+```js
 npm install nasa-ui
 或者
 yarn add nasa-ui

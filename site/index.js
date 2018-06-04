@@ -5,7 +5,6 @@ import { HashRouter, NavLink, Link } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import Overview from './Overview';
 import Docs from './Docs';
-import Demo from './Demo';
 import './style.scss';
 
 const { Header, Content, Footer } = Layout;
@@ -22,15 +21,13 @@ ReactDOM.render((
           style={{ lineHeight: '64px' }}
         >
           <Menu.Item key="/"><NavLink to="/" exact>Overview</NavLink></Menu.Item>
-          <Menu.Item key="/docs"><NavLink to="/docs" exact>Doc</NavLink></Menu.Item>
-          <Menu.Item key="/demo"><NavLink to="/demo" exact>Demo</NavLink></Menu.Item>
+          <Menu.Item key="/doc"><NavLink to="/doc" exact>Doc</NavLink></Menu.Item>
         </Menu>
       </Header>
       <Content style={{ padding: '0 50px' }}>
         <Switch>
           <Route exact path="/" component={Overview} />
-          <Route exact path="/docs" component={Docs}/>
-          <Route exact path="/demo" component={Demo}/>
+          <Route path="/doc" component={Docs}/>
           <Route render={() => <div>404</div>}/>
         </Switch>
       </Content>

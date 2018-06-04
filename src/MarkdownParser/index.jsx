@@ -14,6 +14,7 @@ export default class MarkdownParser extends Component {
   }
 
   static defaultProps = {
+    className: '',
     src: null,
     value: null,
     options: {}
@@ -33,7 +34,7 @@ export default class MarkdownParser extends Component {
 
   render() {
     return (
-      <div dangerouslySetInnerHTML={{__html: this.state.html}}></div>
+      <div className={this.props.className} dangerouslySetInnerHTML={{__html: this.state.html}}></div>
     )
   }
 }

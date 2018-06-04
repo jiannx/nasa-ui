@@ -2,7 +2,7 @@
   "name": "nasa-ui",
   "version": "0.2.10",
   "description": "NETS Nasa front-end Component Library, base on antd",
-  "homepage": "https://milolu.github.io/nasa-ui/#/",
+  "homepage": "https://github.com/milolu/nasa-ui#readme",
   "main": "lib/index.js",
   "module": "src/index.js",
   "directories": {
@@ -29,7 +29,6 @@
     "lib",
     "src"
   ],
-  "homepage": "https://github.com/milolu/nasa-ui#readme",
   "dependencies": {
     "antd": "^3.0.0",
     "classnames": "^2.2.5",
@@ -40,8 +39,8 @@
     "react": "^16.0.0"
   },
   "devDependencies": {
-    "axios": "^0.18.0",
     "autoprefixer": "7.1.6",
+    "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "babel-core": "6.26.0",
     "babel-eslint": "7.2.3",
@@ -73,6 +72,7 @@
     "postcss-loader": "2.0.8",
     "react-dev-utils": "^5.0.1",
     "react-dom": "^16.3.2",
+    "react-markdown-loader": "^1.1.14",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",
     "sass-loader": "^6.0.6",

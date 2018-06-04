@@ -29,7 +29,7 @@ class Echarts extends Component {
     api: null, // Api 请求接口
     params: {}, // Object 请求参数，将优先于history。
     history: [], // array[Object] 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表。保存时间等公共参数
-    option: {}, // Object|Function 图表配置项，优先级 该参数>type中定义的配置项
+    option: () => {}, // Object|Function 图表配置项，优先级 该参数>type中定义的配置项
     data: null, // Object 数据项或图表配置项
     loading: null, // bool 受控loading状态
     optionIsMerge: false, // setOption时是否合并数据 http://echarts.baidu.com/api.html#echartsInstance.setOption
