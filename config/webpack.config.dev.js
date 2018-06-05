@@ -217,7 +217,7 @@ module.exports = {
                   cacheDirectory: true,
                 },
               },
-              require.resolve('react-markdown-loader'),
+              require.resolve('./react-markdown-loader'),
             ]
           },
           // "file" loader makes sure those assets get served by WebpackDevServer.

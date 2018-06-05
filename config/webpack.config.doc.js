@@ -245,8 +245,19 @@ module.exports = {
             ],
           },
           {
-            test: /\.md$/,
-            loader: 'babel!react-markdown'
+            test: /\.mdx/,
+            use: [{
+                loader: require.resolve('babel-loader'),
+                options: {
+                  presets: ["react-app", "stage-0"],
+                  // This is a feature of `babel-loader` for webpack (not Babel itself).
+                  // It enables caching results in ./node_modules/.cache/babel-loader/
+                  // directory for faster rebuilds.
+                  cacheDirectory: true,
+                },
+              },
+              require.resolve('./react-markdown-loader'),
+            ]
           },
           // "file" loader makes sure assets end up in the `build` folder.
           // When you `import` an asset, you get its filename.

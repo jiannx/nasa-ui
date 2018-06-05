@@ -7,9 +7,9 @@ import * as NasaUI from 'nasa-ui';
 import { MarkdownParser } from 'nasa-ui';
 
 import DemoEcharts from './Demo/Echarts.jsx';
-import DemoGrid from './Demo/Grid.jsx';
+import DemoTableEx from './Demo/TableEx.jsx';
 
-import Test from './test.mdx';
+// import Test from './test.mdx';
 
 
 const { SubMenu } = Menu;
@@ -17,7 +17,9 @@ const { Content, Sider } = Layout;
 
 const demos = [
   { name: 'Echarts', doc: 'src/Echarts/index.md', demo: DemoEcharts, },
-  { name: 'CopyTextToClipboard', doc: 'src/CopyTextToClipboard/index.md', demo: DemoGrid },
+  { name: 'CopyTextToClipboard', doc: 'src/CopyTextToClipboard/index.md', demo: null },
+  { name: 'MarkdownParser', doc: 'src/MarkdownParser/index.md', demo: null },
+  { name: 'TableEx', doc: 'src/TableEx/index.md', demo: DemoTableEx },
 ];
 
 @withRouter
@@ -76,13 +78,16 @@ export default class Doc extends Component {
                 <Route key={x.name} exact path={`/doc/${x.name}`} render={() => 
                   <div>
                     <MarkdownParser src={require(`../../src/${x.name}/index.md`)} className="doc-md"></MarkdownParser>
-                    { x.demo && <x.demo></x.demo>}
+                    { x.demo && 
+                      <div>
+                        <x.demo></x.demo>
+                      </div>
+                    }
                   </div>
                 }/>
               )}
               <Route render={() => <div>404</div>}/>
             </Switch>
-            <Test></Test>
           </Content>
         </Layout>
       </Content>

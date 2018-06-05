@@ -1,30 +1,40 @@
-﻿/*
-调用方式1
-<Grid api={this.getList} params={this.gridParams} history={this.history} columns={} />
-手动刷新表格: this.history.push(new Date());
-
-调用方式2 redux:
-<Grid data={} onChange={} columns={} />
-当页码，排序项，筛选器变更时将出发onChange函数 参数={page, pageSize}
-
-最终请求参数
-Object.assign({page, page_size, sort}, props.history[length-1], props.params)
-*/
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import { Table } from 'antd';
 import _ from 'lodash';
-import { gridConfig } from '../config.js';
-import './Grid.scss';
+import './style.scss';
 
-const PAGE_SIZE = gridConfig.defaultPageSize;
-const KEYS = gridConfig;
+const PAGE_SIZE = 30;
+const KEYS = {
+  defaultPageSize: 30,
+  list: 'data',
+  size: 'size',
+  current: 'page_now',
+  getPage: 'page',
+  pageSize: 'page_rows',
+  total: 'records'
+};
 
-export default class Grid extends Component {
+const PAGINATION = {
+  size: 'middle',
+  defaultPageSize: 30, // 默认页码
+  defaultCurrent: 1, // 默认页
+  current: 1,
+  showSizeChanger: true,
+  showQuickJumper: true,
+};
+/*
+初始工作
+TableEx.defaultProps.onReqHandler = () => ({})
+TableEx.defaultProps.onResHandler = () => ({})
+
+ */
+
+export default class TableEx extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
-      pagination: props.pagination,
+      pagination: Object.assign({}, PAGINATION, props.pagination || {}),
       dataSource: []
     };
   }
@@ -39,6 +49,14 @@ export default class Grid extends Component {
     onChange: (pagination, filters, sorter) => {}, // 页码，条目数，排序，过滤器等变更事件，可返回请求参数
     onSort: (sorter) => {}, // 排序变更事件，可返回请求参数，该参数将合并页码等参数
     onFilter: (filters) => {}, // 过滤器变更事件，可返回参数，该参数将合并页码等参数
+    // 受控当前页码
+    currentPage: null,
+    // 当前页码变更
+    onCurrentPageChange: num => {},
+    // 请求前参数处理
+    onReqHandler: (params) => params, // 请求参数{current, pageSize} 针对业务进行格式化
+    // 响应后数据处理
+    onResHandler: (res, reqParams) => res, // 响应数据格式化为组件需要的格式{list: [], pageSize: 30, current: 1, total: 100}
 
     // 以下参数参照 ant table
     columns: [],
@@ -47,14 +65,7 @@ export default class Grid extends Component {
     size: 'middle',
     loading: false,
     scroll: {},
-    pagination: {
-      defaultPageSize: PAGE_SIZE,
-      defaultCurrent: 1,
-      current: 1,
-      onChange: () => {},
-      showSizeChanger: true,
-      showQuickJumper: true,
-    },
+    pagination: PAGINATION,
     rowSelection: null
   }
 
@@ -65,45 +76,33 @@ export default class Grid extends Component {
       return;
     }
     setTimeout(() => {
-      this.componentDidMount(nextProps);
+      this.componentDidMount();
     });
   }
 
-  componentDidMount(nextProps) {
+  componentDidMount() {
     if (this.props.api) {
       this.getData();
-      return;
-    }
-    if (_.isEmpty(this.props.data)) {
       return;
     }
     this.draw(this.props.data);
   }
 
   draw(data) {
-    this.setState(state => {
-      let pagination = false;
-      if (this.props.pagination) {
-        pagination = Object.assign({}, state.pagination, {
-          size: this.props.size,
-          current: data[KEYS.current],
-          pageSize: data[KEYS.pageSize],
-          total: data[KEYS.total],
-        });
-      }
-      return {
-        dataSource: data[KEYS.list],
-        pagination
-      }
+    this.setState({
+      dataSource: _.get(data, 'list', []),
+      pagination: this.props.pagination ?
+        Object.assign({}, this.state.pagination, {
+          size: this.state.pagination.size,
+          current: _.get(data, 'current', 1),
+          pageSize: _.get(data, 'pageSize', 10),
+          total: _.get(data, 'total', 0),
+        }) : false
     });
   }
 
+  // TODO !!! onFilter，onSort是否需要返回数据
   onChange = (pagination, filters, sorter) => {
-    console.info('Grid onChange: ', { pagination, filters, sorter });
-    let params = {
-      [KEYS.getPage]: pagination.current,
-      [KEYS.pageSize]: pagination.pageSize
-    };
     let paramsOfFilter, paramsOfSort, paramsOfChange;
     if (Object.keys(filters).length > 0 && this.props.onFilter) {
       paramsOfFilter = this.props.onFilter(filters) || {};
@@ -114,41 +113,39 @@ export default class Grid extends Component {
     if (this.props.onChange) {
       paramsOfChange = this.props.onChange(pagination, filters, sorter) || {};
     }
-    params = Object.assign(params, paramsOfChange, paramsOfFilter, paramsOfSort);
-    if (this.props.api) {
-      this.getData(params);
-    }
+    let page = Object.assign({}, paramsOfChange, paramsOfFilter, paramsOfSort);
+
+    this.setState({
+      pagination: { ...this.state.pagination, current: pagination.current, pageSize: pagination.pageSize }
+    }, () => {
+      this.getData(page)
+    });
   }
 
-  setPage = (num) => {
-    let state = _.set(this.state, 'pagination.current', 1);
-    this.setState(state);
-  }
-
-  getData(params) {
+  getData(otherParams = {}) {
     if (this.props.history.length === 0) {
       return;
     }
-    let lastHistory = this.props.history[this.props.history.length - 1];
-    params = params || {
-      [KEYS.getPage]: _.get(this.state, 'pagination.current', 1),
-      [KEYS.pageSize]: _.get(this.state, 'pagination.pageSize', PAGE_SIZE)
-    };
+    let params = Object.assign({
+      current: _.get(this.state, 'pagination.current', 1),
+      pageSize: _.get(this.state, 'pagination.pageSize', PAGE_SIZE)
+    }, otherParams, _.last(this.props.history), this.props.params);
+
+    params = this.props.onReqHandler(params);
+    if (!params) {
+      console.error('TableEx: onReqHandler must be return an Object');
+      return;
+    }
     this.setState({
       loading: true,
     });
-    this.props.api(Object.assign({}, lastHistory, params, this.props.params)).then(res => {
-      if (this.props.onResHandler) {
-        res = this.props.onResHandler(res) || res;
-      }
-      res.data[KEYS.list].forEach((x, index) => {
-        x._key = (res.data[KEYS.current] - 1) * res.data[KEYS.pageSize] + index;
-      });
+    this.props.api(params).then(res => {
+      let data = this.props.onResHandler(res, params) || res;
       this.setState({
         loading: false,
-        data: res.data
+        data: data
       });
-      this.draw(res.data);
+      this.draw(data);
     }).catch(err => {
       this.setState({
         loading: false,
