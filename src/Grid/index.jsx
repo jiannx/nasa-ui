@@ -27,13 +27,14 @@ export default class Grid extends Component {
     onFilter: (filters) => {}, // 过滤器变更事件，可返回参数，该参数将合并页码等参数
     config: {
       defaultPageSize: 30,
-      list: 'data',
+      list: 'list',
       size: 'size',
-      current: 'page_now',
-      getPage: 'page',
-      pageSize: 'page_rows',
+      current: 'current',
+      getPage: 'getPage',
+      pageSize: 'pageSize',
       total: 'records'
     },
+    onResHandler: res => res,
     // 以下参数参照 ant table
     columns: [],
     rowKey: '_key',
@@ -135,14 +136,14 @@ export default class Grid extends Component {
       if (this.props.onResHandler) {
         res = this.props.onResHandler(res) || res;
       }
-      res.data[this.props.config.list].forEach((x, index) => {
-        x._key = (res.data[this.props.config.current] - 1) * res.data[this.props.config.pageSize] + index;
+      res[this.props.config.list].forEach((x, index) => {
+        x._key = (res[this.props.config.current] - 1) * res[this.props.config.pageSize] + index;
       });
       this.setState({
         loading: false,
-        data: res.data
+        data: res
       });
-      this.draw(res.data);
+      this.draw(res);
     }).catch(err => {
       this.setState({
         loading: false,

@@ -15,7 +15,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 
-class Interval extends Component {
+export default class Interval extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,7 +28,7 @@ class Interval extends Component {
     style: null,
     interval: 600, // 定时多久后进行校验 默认10分钟
     space: 1, // 间隔多久校验一次，默认1秒
-    render: null, // 每次校验时执行函数，参数为倒计时字符串 (time, second) => time
+    render: (time, second, interval) => `每${Math.round(interval / 60)}分钟更新一次，${time}后更新`, // 每次校验时执行函数，参数为倒计时字符串 (time, second) => time
     onTrigger: null, // 倒计时最后执行函数
     repeat: true, // 是否循环
     countdownFormat: 'mm:ss', // 倒计时格式化
@@ -62,11 +62,9 @@ class Interval extends Component {
   }
 
   setText = (time, second) => {
-    let text = '';
+    let text = time;
     if (this.props.render) {
-      text = this.props.render(time, second);
-    } else {
-      text = `每${Math.round(this.props.interval / 60)}分钟更新一次，${time}后更新`;
+      text = this.props.render(time, second, this.props.interval);
     }
     this.setState({ text });
   }
@@ -77,5 +75,3 @@ class Interval extends Component {
     )
   }
 }
-
-export default Interval;

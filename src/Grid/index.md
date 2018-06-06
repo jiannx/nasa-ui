@@ -1,3 +1,20 @@
+# 图表控件
+
+参数 | 说明 | 类型 | 默认值   
+  -  |  -   |  -   |   - 
+className |  样式名 | String | ''
+style | 样式 | Object | null
+api | Api请求接口，必须为Promise对象 | Promise | null
+history | 请求参数，api参数存在时才有效, 变更此数组，强制刷新 | array[Object] | []
+params | Object 请求参数，将优先于history | Object | {}
+data | 数据项，作为表格数据直接展示 | Object | null
+onChange | 页码，条目数，排序，过滤器等变更事件，可返回请求参数 | Function | (pagination, filters, sorter) => {}
+onSort | 排序变更事件，可返回请求参数，该参数将合并页码等参数 | Function | (sorter) => {}
+onFilter | 过滤器变更事件，可返回参数，该参数将合并页码等参数 | Function |(filters) => {}
+config | 表格解析对于的key值 | Object | { defaultPageSize: 30, list: 'list', size: 'size', current: 'current', getPage: 'getPage', pageSize: 'pageSize', total: 'records'},
+onResHandler | 接口响应事件 | Function | res => res
+... | 其余参数参照Antd Table | ... | 
+
 ## 调用方式1
 ```
 const columns = [

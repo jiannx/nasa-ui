@@ -8,6 +8,10 @@ import { MarkdownParser } from 'nasa-ui';
 
 import DemoEcharts from './Demo/Echarts.jsx';
 import DemoTableEx from './Demo/TableEx.jsx';
+import DemoGrid from './Demo/Grid.jsx';
+import DemoInterval from './Demo/Interval.jsx';
+import DemoRangePickerEx from './Demo/RangePickerEx.jsx';
+import DemoFetch from './Demo/Fetch.jsx';
 
 // import Test from './test.mdx';
 
@@ -19,7 +23,11 @@ const demos = [
   { name: 'Echarts', doc: 'src/Echarts/index.md', demo: DemoEcharts, },
   { name: 'CopyTextToClipboard', doc: 'src/CopyTextToClipboard/index.md', demo: null },
   { name: 'MarkdownParser', doc: 'src/MarkdownParser/index.md', demo: null },
+  { name: 'Grid', doc: 'src/Grid/index.md', demo: DemoGrid },
   { name: 'TableEx', doc: 'src/TableEx/index.md', demo: DemoTableEx },
+  { name: 'Interval', doc: 'src/Interval/index.md', demo: DemoInterval },
+  { name: 'RangePickerEx', doc: 'src/RangePickerEx/index.md', demo: DemoRangePickerEx },
+  { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
 ];
 
 @withRouter
@@ -55,7 +63,7 @@ export default class Doc extends Component {
   render() {
     return (
       <Content style={{ padding: '50px' }}>
-        <Layout style={{ padding: '24px 0', background: '#fff' }}>
+        <Layout style={{ padding: '24px 0', background: '#fff', minHeight: 800 }}>
           <Sider width={200} style={{ background: '#fff' }}>
             <Menu
               mode="inline"
@@ -80,6 +88,7 @@ export default class Doc extends Component {
                     <MarkdownParser src={require(`../../src/${x.name}/index.md`)} className="doc-md"></MarkdownParser>
                     { x.demo && 
                       <div>
+                        <br/>
                         <x.demo></x.demo>
                       </div>
                     }

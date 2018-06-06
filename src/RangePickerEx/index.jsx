@@ -59,11 +59,11 @@ class RangePickerEx extends Component {
 
     this.setState({
       disabledDate: (endValue) => {
-        const res = endValue.valueOf() >= end.valueOf() || endValue.valueOf() <= start.valueOf();
+        const disabled = endValue.valueOf() >= end.valueOf() || endValue.valueOf() <= start.valueOf();
         if (this.props.disabledDate) {
-          return res || this.props.disabledDate(endValue);
+          return disabled || this.props.disabledDate(endValue, disabled);
         }
-        return res;
+        return disabled;
       }
     })
   }
