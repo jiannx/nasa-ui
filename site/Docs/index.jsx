@@ -13,7 +13,7 @@ import DemoInterval from './Demo/Interval.jsx';
 import DemoRangePickerEx from './Demo/RangePickerEx.jsx';
 import DemoFetch from './Demo/Fetch.jsx';
 
-// import Test from './test.mdx';
+import Test from './test.mdx';
 
 
 const { SubMenu } = Menu;
@@ -99,6 +99,7 @@ export default class Doc extends Component {
               )}
               <Route render={() => <div>404</div>}/>
             </Switch>
+            <Test></Test>
           </Content>
         </Layout>
       </Content>

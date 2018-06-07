@@ -30,10 +30,10 @@ export default class TableEx extends Component {
     api: null, // 接口，当传入该参数时，请勿传入data。 () => {}
     history: [], // 该字段用于刷新表格数据，当向该字段中插入请求参数时，重新请求刷新表格。api参数必填
     params: {}, // 该参数优先级高于histroy中参数
-    onChange: (pagination, filters, sorter) => null, // 页码，条目数，排序，过滤器等变更事件，可返回请求参数
+    onChange: (pagination, filters, sorter) => null, // 排序，过滤器等变更事件，如果返回请求参数，则以此请求参数进行获取数据
 
     currentPage: null, // 受控当前页码
-    onCurrentPageChange: num => {}, // 当前页码变更
+    onCurrentPageChange: null, // 当前页码变更
 
     onRequest: (params) => params, // 请求参数{current, pageSize}针对业务进行格式化
     onResponse: (res, reqParams) => res, // 响应数据格式化为组件需要的格式{list: [], pageSize: 30, current: 1, total: 100}
