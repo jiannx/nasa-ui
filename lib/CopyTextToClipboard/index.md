@@ -1,10 +1,13 @@
 # 复制功能
 
 ## Api
-* text(String): 点击后复制的文本
-* \[successCallback](Func): 成功复制回调
-* \[failCallback](Func): 失败回调
-* \[title](String): hover显示文本，children存在时，该参数无效
+
+参数 | 说明 | 类型 | 默认值   
+  -  |  -   |  -   |   - 
+text | 点击后复制的文本 | String | ''
+successCallback | 成功复制回调 | Func | null
+failCallback | 失败回调 | Func | null
+title | hover显示文本，children存在时，该参数无效 | String | '点击复制信息'
 
 
 ## 示例

@@ -27,10 +27,8 @@ export default class Fetch extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.cacheKey) {
-
-    }
     if (!_.isEqual(this.props.history, nextProps.history)) {
+      console.log(nextProps.history);
       setTimeout(this.getData);
     }
   }

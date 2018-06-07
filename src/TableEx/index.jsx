@@ -4,12 +4,6 @@ import _ from 'lodash';
 import './style.scss';
 import Fetch from '../Fetch';
 
-/*
-项目配置
-TableEx.defaultProps.onReqHandler = () => ({})
-TableEx.defaultProps.onResHandler = () => ({})
- */
-
 const PAGINATION = {
   defaultPageSize: 20, // 默认页码
   defaultCurrent: 1, // 默认页
@@ -50,40 +44,65 @@ export default class TableEx extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ history: nextProps.history });
+    // 存在外部history与当前组件内history不一致的问题
+    if (nextProps.history && !_.isEqual(this.props.history, nextProps.history)) {
+      this.setState({ history: nextProps.history }); // 将直接替换掉内部history
+    }
     // 数据未发生变更时，不做刷新
-    if (_.isEqual(this.props.data, nextProps.data)) {
+    if (nextProps.data && !_.isEqual(this.props.data, nextProps.data)) {
+      this.setData(nextProps.data);
       return;
     }
-    setTimeout(() => {
-      this.componentDidMount();
-    });
+    // 页码变更处理
+    else if (_.isNumber(this.props.currentPage) && !_.isEqual(this.props.currentPage, nextProps.currentPage)) {
+      setTimeout(() => {
+        this.refresh({ current: nextProps.currentPage })
+      })
+      return;
+    }
   }
 
   componentDidMount() {
     if (this.props.data) {
-      this.setData(this.props.data)
+      this.setData(this.props.data);
     }
   }
 
-  onChange = (pagination, filters, sorter) => {
+  refresh = (newParams = {}, isMergeLast = true) => {
+    let params = newParams;
+    if (isMergeLast) {
+      params = Object.assign({}, _.last(this.state.history), params);
+    }
+    this.setState({ history: this.state.history.concat([params]) });
+  }
 
+  onChange = (pagination, filters, sorter) => {
     // 分页状态未变更，则为过滤条件变更
     if (_.isEqual(pagination, this.state.pagination)) {
       let filterParam = this.props.onChange(pagination, filters, sorter);
       if (!filterParam) {
-        let newParams = Object.assign({},
-          _.last(this.state.history), {
-            filters,
-            sorter: { columnKey: sorter.columnKey, field: sorter.field, order: sorter.order }
-          });
-        this.setState({ history: this.state.history.concat([newParams]) });
+        this.refresh({
+          filters,
+          sorter: { columnKey: sorter.columnKey, field: sorter.field, order: sorter.order }
+        });
       }
-    } else {
-      // 分页请求
-      this.setState({ pagination }, () => {
-        this.setState({ history: [...this.state.history, _.last(this.state.history)] })
-      });
+    }
+    // 分页请求
+    else {
+      // 受控页码处理, 页码不做变更，由外部控制，内部自动调整pageSize
+      if (_.isNumber(this.props.currentPage)) {
+        if (this.state.pagination.pageSize !== pagination.pageSize) {
+          let newPagination = { ...this.state.pagination };
+          newPagination.pageSize = pagination.pageSize;
+          this.setState({ pagination: newPagination }, this.refresh);
+        } else {
+          this.props.onCurrentPageChange && this.props.onCurrentPageChange(pagination.current);
+        }
+      }
+      // 非受控页码自动跳转
+      else {
+        this.setState({ pagination }, this.refresh);
+      }
     }
   }
 
@@ -111,7 +130,7 @@ export default class TableEx extends Component {
   onFetchRequest = (params) => {
     params = Object.assign({
       pageSize: _.get(this.state, 'pagination.pageSize', this.state.pagination.defaultPageSize),
-      current: _.get(this.state, 'pagination.current', 1),
+      current: this.props.currentPage ? this.props.currentPage : _.get(this.state, 'pagination.current', 1),
     }, params);
     params = this.props.onRequest(params) || params;
     return params;

@@ -22,6 +22,24 @@ function test(params) {
   // });
 }
 
+TableEx.defaultProps.onRequest = (params) => {
+  return {
+    ...params,
+    page: params.current,
+    page_rows: params.pageSize
+  };
+};
+
+TableEx.defaultProps.onResponse = ({ data }) => {
+  let res = data.data;
+  return {
+    list: res.data,
+    pageSize: res.page_rows,
+    current: res.page_now,
+    total: res.records,
+  };
+};
+
 export default class DemoTable extends Component {
   constructor(props) {
     super(props);
@@ -70,28 +88,14 @@ export default class DemoTable extends Component {
           data={data1}
           pagination={false}
         />
-
         <br/>
         <h2>异步请求 <Button onClick={this.onTestApi}>发起请求</Button></h2>
         <TableEx
           api={test}
           columns={columns}
           history={this.state.history}
-          onRequest={(params) => {
-            return {
-              ...params,
-              page: params.current,
-              page_rows: params.pageSize
-            };
-          }}
           pagination={{
             defaultPageSize: 5
-          }}
-          onResponse = {({ data }) => {
-            let res = data.data;
-            return {
-              list: res.data
-            };
           }}
         />
         <h2>CDN分页测试 <Button onClick={this.onTestApi}>发起请求</Button></h2>
@@ -103,21 +107,19 @@ export default class DemoTable extends Component {
             size: 'small',
             defaultPageSize: 5
           }}
-          onRequest={(params) => {
-            return {
-              ...params,
-              page: params.current,
-              page_rows: params.pageSize,
-            };
+        />
+        <h2>受控页码 <Button onClick={this.onTestApi}>发起请求</Button></h2>
+        <TableEx
+          api={test}
+          columns={columns}
+          history={this.state.history}
+          pagination={{
+            defaultPageSize: 5
           }}
-          onResponse = {({ data }) => {
-            let res = data.data;
-            return {
-              list: res.data,
-              pageSize: res.page_rows,
-              current: res.page_now,
-              total: res.records,
-            };
+          currentPage={this.state.currentPage || 1}
+          onCurrentPageChange={num => {
+            console.log(num)
+            this.setState({currentPage: num});
           }}
         />
       </div>

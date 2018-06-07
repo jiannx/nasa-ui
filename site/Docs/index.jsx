@@ -28,6 +28,8 @@ const demos = [
   { name: 'Interval', doc: 'src/Interval/index.md', demo: DemoInterval },
   { name: 'RangePickerEx', doc: 'src/RangePickerEx/index.md', demo: DemoRangePickerEx },
   { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
+  { name: 'FormEx2', doc: 'src/FormEx2/index.md', demo: null },
+  { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
 ];
 
 @withRouter

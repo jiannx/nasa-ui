@@ -17,13 +17,13 @@ export default class MarkdownParser extends Component {
     className: '',
     src: null,
     value: null,
-    options: {}
+    option: {}
   }
 
   componentDidMount() {
     if (this.props.src) {
       axios(this.props.src).then(res => {
-        let html = marked(res.data, this.props.options);
+        let html = marked(res.data, this.props.option);
         this.setState({ html });
       });
     } else if (this.props.value) {

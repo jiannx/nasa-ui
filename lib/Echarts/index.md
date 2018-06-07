@@ -1,18 +1,19 @@
 # 图表控件
 
-## Api
-* echartsUrl: 'vendor/echarts/echarts.min.js', // echart库文件地址
-* className: '',
-* style: null,
-* api: null, // Api 请求接口
-* params: {}, // Object 请求参数，将优先于history。
-* history: [], // array[Object] 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表。保存时间等公共参数
-* option: {}, // Object|Function 图表配置项，优先级 该参数>type中定义的配置项
-* data: null, // Object 数据项或图表配置项
-* loading: null, // bool 受控loading状态
-* optionIsMerge: false, // setOption时是否合并数据 http://echarts.baidu.com/api.html#echartsInstance.setOption
-* onResHandler: res => res.data, // Function 响应后数据格式化，api参数存在时才有效
-* isAutoResize: true, // 自动调整浏览器大小
+参数 | 说明 | 类型 | 默认值   
+  -  |  -   |  -   |   - 
+option | 图表配置函数，参数为data或者api返回数据 | Function | () => {}
+echartsUrl | echart库文件地址 | String | 'vendor/echarts/echarts.min.js'
+className |  样式名 | String | ''
+style | 样式 | Object | null
+data | 数据项，将作为option函数的参数 | Any | null
+api | Api请求接口，必须为Promise对象 | Promise | null
+params | Object 请求参数，将优先于history | Object | {}
+history | 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表 | array[Object] | []
+loading | 受控loading状态 | bool | null
+optionIsMerge | setOption时是否合并数据 http://echarts.baidu.com/api.html#echartsInstance.setOption | bool | false
+onResHandler | 响应后数据格式化，api参数存在时才有效 | Function | res => res.data  
+isAutoResize | 是否自动调整浏览器大小 | bool | true 
 
 示例
 ```jsx
