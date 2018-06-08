@@ -15,7 +15,6 @@ import DemoFetch from './Demo/Fetch.jsx';
 
 import Test from './test.mdx';
 
-
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
@@ -30,6 +29,7 @@ const demos = [
   { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
   { name: 'FormEx2', doc: 'src/FormEx2/index.md', demo: null },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
+  { name: 'TreeMultipleSelect', doc: 'src/TreeMultipleSelect/index.md', demo: null },
 ];
 
 @withRouter

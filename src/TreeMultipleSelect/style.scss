@@ -3,7 +3,7 @@
   width: 100%;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
-  .nasa-tms-tool {
+  .nasa-tms_tool {
     width: 100%;
     min-height: 40px;
     border-bottom: 1px solid #d9d9d9;
@@ -12,56 +12,67 @@
     a {
       margin: 0;
     }
-    .nasa-tms-tool-right {
-      float: right;
-      .ant-btn {
-        margin: 0 6px;
-        padding: 0;
-        background: transparent;
-        border: none;
-        color: #108ee9;
-        &:after {
-          display: none;
-        }
-        &:hover {
-          color: #49a9ee;
-        }
-        &[disabled] {
-          color: #ccc;
-        }
+  }
+  .nasa-tms_tool-right {
+    float: right;
+    .ant-btn {
+      margin: 0 6px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: #108ee9;
+      &:after {
+        display: none;
+      }
+      &:hover {
+        color: #49a9ee;
+      }
+      &[disabled] {
+        color: #ccc;
       }
     }
   }
-  .nasa-tms-content {
+
+  .nasa-tms_content {
     width: 100%;
     min-height: 100px;
     max-height: 200px;
     overflow: auto;
   }
-}
 
-.nasa-tms-menu {
-  min-width: 300px;
-  background-color: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  box-shadow: 0 0 6px #d9d9d9;
-  .nasa-tms-menu-tool {
-    width: 100%;
-    padding: 8px;
-    border-bottom: 1px solid #d9d9d9;
+  .nasa-tms_placeholder {
+    padding: 40px;
+    text-align: center;
+    color: #ccc;
   }
-  .nasa-tms-menu-content {
-    width: 100%;
-    min-height: 50px;
-    max-height: 300px;
-    border-bottom: 1px solid #d9d9d9;
-    padding: 4px 0;
-    overflow: auto;
+
+  .nasa-tms_menu {
+    min-width: 300px;
+    max-width: 500px;
+    background-color: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    box-shadow: 0 0 6px #d9d9d9;
+    .nasa-tms_menu-tool {
+      width: 100%;
+      padding: 8px;
+      border-bottom: 1px solid #d9d9d9;
+    }
+    .nasa-tms_menu-content {
+      width: 100%;
+      min-height: 50px;
+      max-height: 300px;
+      border-bottom: 1px solid #d9d9d9;
+      padding: 4px 0;
+      overflow: auto;
+    }
+    .nasa-tms_menu-footer {
+      width: 100%;
+      padding: 8px;
+      text-align: right;
+    }
   }
-  .nasa-tms-menu-footer {
-    width: 100%;
-    padding: 8px;
-    text-align: right;
+  .nasa-tms_menu-info {
+    padding: 4px 10px;
   }
 }

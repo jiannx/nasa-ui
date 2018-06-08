@@ -3,7 +3,7 @@
  * 支持树多选，列表多选
  */
 import React, { Component } from 'react';
-import { Button, Dropdown, Input, Tree, Popover, Icon } from 'antd';
+import { Button, Dropdown, Input, Tree } from 'antd';
 import _ from 'lodash';
 import './style.scss';
 
@@ -16,16 +16,16 @@ class TreeMultipleSelect extends Component {
   static defaultProps = {
     className: '', // 样式名
     list: null, // 可选列表  [{ title, key, children: [{ titile, key }, {title, key}] }]
-    value: [], // 与选值 [key1, key2, key3]
+    value: [], // 选中的key值列表 [key1, key2, key3]
     onChange: (selKeyList) => {}, // 变更事件 选中key值列表
     onAddClick: null, // 添加按钮点击事件
-
+    defaultShowCount: 20, // 可选菜单默认显示条目数，及每次递增数
     searchPlaceholder: '请输入关键词',
     addButton: '+ 添加',
     noListDataText: '没有可选择的项',
     placeholder: '请添加',
     searchNoMatchText: '没有匹配项',
-    nodeRender: record => record.title, // 节点渲染 
+    nodeRender: record => record.title, // 节点渲染方法
   }
 
   constructor(props) {
@@ -36,7 +36,7 @@ class TreeMultipleSelect extends Component {
       value: props.value || [],
       checkedKeys: props.value || [],
       menuCheckedKeys: [],
-      showCount: DEFAULT_SHOW_COUNT,
+      showCount: this.props.defaultShowCount,
     };
   }
 
@@ -171,19 +171,19 @@ class TreeMultipleSelect extends Component {
     list = _.slice(list, 0, this.state.showCount - 1);
 
     const menu = (
-      <div className="nasa-tms-menu" onClick={(e) => e.stopPropagation()}>
-        <div className="nasa-tms-menu-tool">
+      <div className="nasa-tms_menu" onClick={(e) => e.stopPropagation()}>
+        <div className="nasa-tms_menu-tool">
           <Search placeholder={this.props.searchPlaceholder} onChange={this.onSearchChange}></Search>
         </div>
-        <div className="nasa-tms-menu-content" onScroll={this.onMenuScroll}>
+        <div className="nasa-tms_menu-content" onScroll={this.onMenuScroll}>
           {this.props.list === null && 
-            <div style={{padding: '4px 10px'}}>加载中...</div>
+            <div className="nasa-tms_menu-info">加载中...</div>
           }
           {_.isArray(this.props.list) && this.props.list.length === 0 && 
-            <div style={{padding: '4px 10px'}}>{this.props.noListDataText}</div>
+            <div className="nasa-tms_menu-info">{this.props.noListDataText}</div>
           }
           {_.isArray(this.props.list) && this.props.list.length > 0 && list.length === 0 && this.state.search && 
-            <div style={{padding: '4px 10px'}}>{this.props.searchNoMatchText}</div>
+            <div className="nasa-tms_menu-info">{this.props.searchNoMatchText}</div>
           }
           <Tree
             checkable
@@ -194,19 +194,19 @@ class TreeMultipleSelect extends Component {
           </Tree>
           {hasMore}
         </div>
-        <div className="nasa-tms-menu-footer">
+        <div className="nasa-tms_menu-footer">
           <Button type="primary" onClick={this.onMenuSelOk}>确定</Button>&nbsp;
           <Button onClick={this.onMenuSelReset}>重置</Button>
         </div>
       </div>)
 
     return (
-      <div className={`nasa-tms ${this.props.className}`}>
-        <div className="nasa-tms-tool">
-          <Dropdown trigger="click" overlay={menu} visible={this.state.menuShow} onVisibleChange={this.onMenuTrigger}>
+      <div className={`nasa-tms ${this.props.className}`} id={this.id}>
+        <div className="nasa-tms_tool">
+          <Dropdown trigger="click" overlay={menu} visible={this.state.menuShow} onVisibleChange={this.onMenuTrigger} getPopupContainer={() => document.getElementById(this.id)}>
             <a onClick={this.onAddClick}>{this.props.addButton}</a>
           </Dropdown>
-          <div className="nasa-tms-tool-right">
+          <div className="nasa-tms_tool-right">
             {this.state.menuCheckedKeys.length < this.state.value.length && 
               <Button type="button" onClick={this.onSelectedSelAll}>全选</Button>
             }
@@ -216,9 +216,9 @@ class TreeMultipleSelect extends Component {
             <Button type="button" disabled={this.state.menuCheckedKeys.length === 0} onClick={this.onSelectedDel}>删除</Button>
           </div>
         </div>
-        <div className="nasa-tms-content">
+        <div className="nasa-tms_content">
           {this.state.value.length === 0 && 
-            <div style={{padding: 40, textAlign: 'center', color: '#ccc'}}>{this.props.placeholder}</div>
+            <div className="nasa-tms_placeholder">{this.props.placeholder}</div>
           }
           {this.state.value.length > 0 && 
             <Tree
