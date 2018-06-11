@@ -12,6 +12,7 @@ import DemoGrid from './Demo/Grid.jsx';
 import DemoInterval from './Demo/Interval.jsx';
 import DemoRangePickerEx from './Demo/RangePickerEx.jsx';
 import DemoFetch from './Demo/Fetch.jsx';
+import DemoSelectWithTree from './Demo/SelectWithTree.jsx';
 
 import Test from './test.mdx';
 
@@ -29,8 +30,9 @@ const demos = [
   { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
   { name: 'FormEx2', doc: 'src/FormEx2/index.md', demo: null },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
-  { name: 'TreeMultipleSelect', doc: 'src/TreeMultipleSelect/index.md', demo: null },
+  { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
 ];
+
 
 @withRouter
 export default class Doc extends Component {
@@ -99,7 +101,6 @@ export default class Doc extends Component {
               )}
               <Route render={() => <div>404</div>}/>
             </Switch>
-            <Test></Test>
           </Content>
         </Layout>
       </Content>

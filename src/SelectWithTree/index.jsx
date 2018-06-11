@@ -12,7 +12,50 @@ const TreeNode = Tree.TreeNode;
 
 const DEFAULT_SHOW_COUNT = 20; // 默认显示条目数
 
-class TreeMultipleSelect extends Component {
+// 格式化生成组件key，_key = parentkey + ':' + childlkey
+function formater(list, parentkey = '') {
+  list.forEach(item => {
+    item._key = parentkey + ':' + item.key;
+    if (item.children) {
+      formater(item.children, item._key);
+    }
+  });
+}
+
+// 根据组件key生成父节点列表
+function getParentKeysByComponentKey(item) {
+  let keys = item._key.split(':');
+  keys = keys.slice(1, keys.length - 1);
+  if (keys.length === 0) {
+    return [];
+  }
+  return keys;
+}
+
+// 根据组件key生成所有节点节点列表
+function getAllKeysByComponentKey(componentKey) {
+  let keys = componentKey.split(':');
+  keys = keys.slice(1, keys.length);
+  return keys;
+}
+
+// 根据原始key获取节点
+function getNodeByKey(list, key) {
+  let res = null;
+  for (let i = 0; i < list.length; i++) {
+    let item = list[0];
+    if (item.key === key) {
+      res = item;
+      break;
+    }
+    if (item.children) {
+      res = getNodeByKey(item.children, key);
+    }
+  }
+  return res;
+}
+
+class SelectWithTree extends Component {
   static defaultProps = {
     className: '', // 样式名
     list: null, // 可选列表  [{ title, key, children: [{ titile, key }, {title, key}] }]
@@ -30,11 +73,14 @@ class TreeMultipleSelect extends Component {
 
   constructor(props) {
     super(props);
+    let list = this.formaterList(props.list);
+    let value = this.parseValueToComponentKeys(list, props.value);
     this.state = {
+      list: list,
       search: '',
       menuShow: false,
-      value: props.value || [],
-      checkedKeys: props.value || [],
+      value: value || [],
+      checkedKeys: value || [],
       menuCheckedKeys: [],
       showCount: this.props.defaultShowCount,
     };
@@ -42,20 +88,55 @@ class TreeMultipleSelect extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(nextProps.value, this.state.value)) {
-      this.setState({ checkedKeys: nextProps.value, value: nextProps.value });
+      let value = this.parseValueToComponentKeys(this.state.list, nextProps.value);
+      this.setState({
+        checkedKeys: value,
+        value: value
+      });
     }
     // 可选列表变更时，强制刷新tree中选中节点
     if (!_.isEqual(nextProps.list, this.props.list)) {
       this.setState({ checkedKeys: [] });
+      let value = this.parseValueToComponentKeys(this.state.list, nextProps.value);
       setTimeout(() => {
-        this.setState({ checkedKeys: nextProps.value, value: nextProps.value });
+        this.setState({
+          checkedKeys: value,
+          value: value,
+          list: this.formaterList(nextProps.list)
+        });
       });
     }
   }
 
   componentDidMount(nextProps) {
-    this.id = `nasa-tms-${new Date().getTime()}`;
+    this.id = `nasa-swt-${new Date().getTime()}`;
     console.log(this.id);
+  }
+
+  formaterList = (list) => {
+    if (!list) {
+      return null;
+    }
+    let result = _.cloneDeep(list);
+    formater(result);
+    console.log(result);
+    console.log(getParentKeysByComponentKey(result[0]));
+    console.log(getParentKeysByComponentKey(result[0].children[2].children[0]));
+    return result;
+  }
+
+  parseValueToComponentKeys = (list, value) => {
+    console.log(list);
+    console.log(value);
+    let result = [];
+    value.forEach(v => {
+      let item = getNodeByKey(list, v);
+      if (item) {
+        result.push(item._key);
+      }
+    });
+    console.log(result);
+    return result;
   }
 
   onAddClick = () => {
@@ -65,6 +146,8 @@ class TreeMultipleSelect extends Component {
 
   onMenuSelOk = () => {
     let list = this.state.checkedKeys;
+    // TODO 将内部key转化为外部key
+
     this.props.onChange && this.props.onChange(list);
     this.setState({ menuShow: false });
   }
@@ -81,7 +164,7 @@ class TreeMultipleSelect extends Component {
   renderMenuTreeNodes = (list) => {
     return list.map((item) => {
       return (
-        <TreeNode title={this.props.nodeRender(item)} key={item.key} dataRef={item}>
+        <TreeNode title={this.props.nodeRender(item)} key={item._key} dataRef={item}>
           {item.children ? this.renderMenuTreeNodes(item.children) : null}
         </TreeNode>
       );
@@ -96,7 +179,7 @@ class TreeMultipleSelect extends Component {
 
   getKeys = (treeData, keys = []) => {
     treeData.forEach(node => {
-      keys.push(node.key);
+      keys.push(node._key);
       if (node.children) {
         this.getKeys(node.children, keys);
       }
@@ -117,6 +200,12 @@ class TreeMultipleSelect extends Component {
 
   renderSelectedTree = (treeData, keyList) => {
     let nodes = [];
+    // 生成包含父节点的keys
+    keyList = _.reduce(keyList, (result, value) => {
+      let keys = getAllKeysByComponentKey(value);
+      return result.concat(keys);
+    }, []);
+    console.log(keyList);
     treeData.forEach(item => {
       if (keyList.includes(item.key)) {
         nodes.push(
@@ -155,7 +244,7 @@ class TreeMultipleSelect extends Component {
   }
 
   render() {
-    let list = this.props.list || [];
+    let list = this.state.list || [];
 
     if (this.state.search) {
       list = list.filter(x => _.get(x, 'title', '').includes(this.state.search));
@@ -171,19 +260,19 @@ class TreeMultipleSelect extends Component {
     list = _.slice(list, 0, this.state.showCount - 1);
 
     const menu = (
-      <div className="nasa-tms_menu" onClick={(e) => e.stopPropagation()}>
-        <div className="nasa-tms_menu-tool">
+      <div className="nasa-swt_menu" onClick={(e) => e.stopPropagation()}>
+        <div className="nasa-swt_menu-tool">
           <Search placeholder={this.props.searchPlaceholder} onChange={this.onSearchChange}></Search>
         </div>
-        <div className="nasa-tms_menu-content" onScroll={this.onMenuScroll}>
+        <div className="nasa-swt_menu-content" onScroll={this.onMenuScroll}>
           {this.props.list === null && 
-            <div className="nasa-tms_menu-info">加载中...</div>
+            <div className="nasa-swt_menu-info">加载中...</div>
           }
           {_.isArray(this.props.list) && this.props.list.length === 0 && 
-            <div className="nasa-tms_menu-info">{this.props.noListDataText}</div>
+            <div className="nasa-swt_menu-info">{this.props.noListDataText}</div>
           }
           {_.isArray(this.props.list) && this.props.list.length > 0 && list.length === 0 && this.state.search && 
-            <div className="nasa-tms_menu-info">{this.props.searchNoMatchText}</div>
+            <div className="nasa-swt_menu-info">{this.props.searchNoMatchText}</div>
           }
           <Tree
             checkable
@@ -194,19 +283,19 @@ class TreeMultipleSelect extends Component {
           </Tree>
           {hasMore}
         </div>
-        <div className="nasa-tms_menu-footer">
+        <div className="nasa-swt_menu-footer">
           <Button type="primary" onClick={this.onMenuSelOk}>确定</Button>&nbsp;
           <Button onClick={this.onMenuSelReset}>重置</Button>
         </div>
       </div>)
 
     return (
-      <div className={`nasa-tms ${this.props.className}`} id={this.id}>
-        <div className="nasa-tms_tool">
+      <div className={`nasa-swt ${this.props.className}`} id={this.id}>
+        <div className="nasa-swt_tool">
           <Dropdown trigger="click" overlay={menu} visible={this.state.menuShow} onVisibleChange={this.onMenuTrigger} getPopupContainer={() => document.getElementById(this.id)}>
             <a onClick={this.onAddClick}>{this.props.addButton}</a>
           </Dropdown>
-          <div className="nasa-tms_tool-right">
+          <div className="nasa-swt_tool-right">
             {this.state.menuCheckedKeys.length < this.state.value.length && 
               <Button type="button" onClick={this.onSelectedSelAll}>全选</Button>
             }
@@ -216,9 +305,9 @@ class TreeMultipleSelect extends Component {
             <Button type="button" disabled={this.state.menuCheckedKeys.length === 0} onClick={this.onSelectedDel}>删除</Button>
           </div>
         </div>
-        <div className="nasa-tms_content">
+        <div className="nasa-swt_content">
           {this.state.value.length === 0 && 
-            <div className="nasa-tms_placeholder">{this.props.placeholder}</div>
+            <div className="nasa-swt_placeholder">{this.props.placeholder}</div>
           }
           {this.state.value.length > 0 && 
             <Tree
@@ -226,7 +315,7 @@ class TreeMultipleSelect extends Component {
               onCheck={this.onSelectedCheck}
               checkedKeys={this.state.menuCheckedKeys}
             >
-              {this.renderSelectedTree(this.props.list, this.state.value)}
+              {this.renderSelectedTree(this.state.list, this.state.value)}
             </Tree>
           }
         </div>
@@ -235,4 +324,4 @@ class TreeMultipleSelect extends Component {
   }
 }
 
-export default TreeMultipleSelect;
+export default SelectWithTree;
