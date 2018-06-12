@@ -98,7 +98,7 @@ export default class ControlledForm extends Component {
   }
 }
 
-function getValueFrom(e) {
+function getValueFromEvent(e) {
   let value = e;
   if (e && e.target) {
     if (e.target.value !== undefined) {
@@ -175,7 +175,7 @@ class Item extends Component {
   }
 
   onChange = (e) => {
-    let value = getValueFrom(e);
+    let value = getValueFromEvent(e);
     this.checkValidate(value);
     // 触发数据变更
     this.props.emitChange(this.props.dataIndex, value);
@@ -184,12 +184,13 @@ class Item extends Component {
 
   // onBlur 下暂存变更
   onStashChange = (e) => {
-    let value = getValueFrom(e);
+    let value = getValueFromEvent(e);
     this.setState({ stashValue: value });
   }
 
-  onBlur = () => {
+  onBlur = (e) => {
     console.log('blur');
+    this.props.onBlur && this.props.onBlur(e);
     this.onChange(this.state.stashValue);
     this.setState({ focusing: false, stashValue: undefined });
   }
@@ -197,6 +198,7 @@ class Item extends Component {
   onFocus = (e) => {
     console.log('focus');
     this.props.onFocus && this.props.onFocus(e);
+    this.setState({ stashValue: _.get(this.props.data, this.props.dataIndex) });
     this.setState({ focusing: true });
   }
 
@@ -212,9 +214,12 @@ class Item extends Component {
 
     // 支持onBlur
     if (this.props.trigger === 'onBlur') {
-      props.onChange = this.onStashChaneg;
+      props.onChange = this.onStashChange;
       props.onBlur = this.onBlur;
       props.onFocus = this.onFocus;
+      if (this.state.focusing) {
+        props[(isInstanceOfClass(element, Switch) || isInstanceOfClass(element, Checkbox)) ? 'checked' : 'value'] = this.state.stashValue;
+      }
     }
 
     return React.cloneElement(element, props);

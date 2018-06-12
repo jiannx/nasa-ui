@@ -35,7 +35,7 @@ export default class Demo extends Component {
           }}
           itemProps={{ labelCol:{ span: 4 }, wrapperCol: {span: 16} }}
         >
-          <div><h4>测试表单1</h4></div>
+          <h3>基本使用</h3>
           <FormItem
             label="不受控字段1"
           >
@@ -57,20 +57,8 @@ export default class Demo extends Component {
             required
             decorator={<Input></Input>}
           />
-          <FormItem
-            label="onBlur触发"
-            dataIndex="require.key2"
-            required
-            trigger="onBlur"
-            decorator={<Input></Input>}
-          />
-          <FormItem
-            label="onBlur触发"
-            dataIndex="require.defaultValue"
-            required
-            trigger="onBlur"
-            decorator={<Input></Input>}
-          />
+          
+          <h3>校验</h3>
           <FormItem
             label="自定义规则1"
             dataIndex="rule1"
@@ -79,15 +67,6 @@ export default class Demo extends Component {
             rules={[
               { required: true, message: '请填写该字段'},
               { pattern: /^[0-9a-zA-Z-_\u4e00-\u9fa5]+$/, message: '帐号名称由汉字、字母、数字、中划线或下划线组成' },
-              { validator(rule, value, callback, source, options) {
-                  try {
-                    JSON.parse(value);
-                    callback();
-                  } catch(err) {
-                    callback(['请填写正确的json参数']);
-                  }
-                }
-              }
             ]}
           />
           <FormItem
@@ -105,6 +84,22 @@ export default class Demo extends Component {
                 }
               }
             ]}
+          />
+
+          <h3>onBlur</h3>
+          <FormItem
+            label="onBlur触发"
+            dataIndex="require.key2"
+            required
+            trigger="onBlur"
+            decorator={<Input></Input>}
+          />
+          <FormItem
+            label="onBlur触发"
+            dataIndex="require.defaultValue"
+            required
+            trigger="onBlur"
+            decorator={<Input></Input>}
           />
           <div>
             {JSON.stringify(this.state.form1Data)}
