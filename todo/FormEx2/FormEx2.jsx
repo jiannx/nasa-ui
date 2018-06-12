@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { Form, Row, Col, Button, Icon, Checkbox, Input, Select, Radio, Switch } from 'antd';
+import { InputEx } from 'src/components';
 import _ from 'lodash';
 import Schema from 'async-validator';
 
@@ -48,27 +49,9 @@ this.form.submit(successCallback = (values) => {}); // 表单验证并回调事�
 输入 => FormItem.onchange => Form.onChange => Form.setState（更新数据至FormItem） => Form调用FormItem的validate生成表单校验结果(更新FormItem的校验状态)，触发外部事件
  */
 
-/*
-单个属性默认值
-表单内部维护一份数据结构，与外部数据独立
-表单提供接口给外部，允许外部设置内部数据
-提供表单验证接口，如果通过，则回调事件
-表单提供事件，当数据变更时触发
-可配置表单验证触发点
-针对单个属性，可配置规则
-
-动态表单
-支持Input，multselect，radio，Objec，array
-
-项目表单中规则
-失焦校验无效
-所有采用动态校验
-添加页面，首次进入，按钮置灰，当表单校验成功后，按钮可点击。重名校验将在提交数据时进行，如果需要单独接口校验，将存在前后台数据校验不一致的时差
-编辑页面，首次进入，按钮置灰，当表单校验成功后，按钮可点击。当页面修改至与第一次进入页面时一致时，按钮状态也是可以点击状态，只验证是否编辑过，不验证数据是否一致
- */
-
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
+const TextAreaEx = InputEx.TextAreaEx;
 const RadioGroup = Radio.Group;
 
 
@@ -96,10 +79,7 @@ class FormEx2 extends Component {
 
   componentDidUpdate() {}
 
-  componentWillReceiveProps(nextProps) {
-    // const { defaultValues } = nextProps;
-    // this.setState({ data: defaultValues});
-  }
+  componentWillReceiveProps(nextProps) {}
 
   /**
    * 校验基本函数 外部请勿调用
@@ -113,7 +93,6 @@ class FormEx2 extends Component {
 
     const isAllCheck = (result) => {
       validateResult.push(result);
-      // console.log(validateResult);
       if (validateResult.length === itemLength) {
         // 触发外部事件
         callback && callback(validateResult.every(x => x.status === 'success'), validateResult)
@@ -140,7 +119,7 @@ class FormEx2 extends Component {
    * @param  {[String]} key   [对应数值在数据中的key,支持多层结构]
    * @param  {[Any]}    value [对应数值在数据中的value]
    */
-  setValue = (key, value) => {
+  setValue = (key, value, isValidate = true) => {
     let data = _.cloneDeep(this.state.data);
     _.set(data, key, value);
     // 数据未变更的情况下,不触发事件
@@ -149,13 +128,15 @@ class FormEx2 extends Component {
     }
     this.setState({ data }, () => {
       // 数据校验
-      this.validate({
-        key,
-        callback: (isSuccess, validateResult) => {
-          this.props.onValidate && this.props.onValidate(isSuccess, validateResult);
-        },
-        isSubmit: false
-      });
+      if (isValidate) {
+        this.validate({
+          key,
+          callback: (isSuccess, validateResult) => {
+            this.props.onValidate && this.props.onValidate(isSuccess, validateResult);
+          },
+          isSubmit: false
+        });
+      }
       // 触发外部事件
       if (this.props.onChange) {
         // 必须拷贝数据，否则无法刷新
@@ -390,11 +371,11 @@ class FormEx2Item extends Component {
     }
     // 替换Input为InputEx
     else if (isInstanceOfClass(element, Input)) {
-      newElement = React.createElement(Input, props);
+      newElement = React.createElement(InputEx, props);
     }
     // TextArea为TextAreaEx
     else if (isInstanceOfClass(element, TextArea)) {
-      newElement = React.createElement(TextArea, props);
+      newElement = React.createElement(TextAreaEx, props);
     }
     // checked处理
     else if (isInstanceOfClass(element, Switch) || isInstanceOfClass(element, Checkbox)) {

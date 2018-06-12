@@ -13,6 +13,7 @@ import DemoInterval from './Demo/Interval.jsx';
 import DemoRangePickerEx from './Demo/RangePickerEx.jsx';
 import DemoFetch from './Demo/Fetch.jsx';
 import DemoSelectWithTree from './Demo/SelectWithTree.jsx';
+import DemoControlledForm from './Demo/ControlledForm.jsx';
 
 import Test from './test.mdx';
 
@@ -28,9 +29,9 @@ const demos = [
   { name: 'Interval', doc: 'src/Interval/index.md', demo: DemoInterval },
   { name: 'RangePickerEx', doc: 'src/RangePickerEx/index.md', demo: DemoRangePickerEx },
   { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
-  { name: 'FormEx2', doc: 'src/FormEx2/index.md', demo: null },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
   { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
+  { name: 'ControlledForm', doc: 'src/ControlledForm/index.md', demo: DemoControlledForm },
 ];
 
 
