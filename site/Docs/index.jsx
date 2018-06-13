@@ -30,7 +30,7 @@ const demos = [
   { name: 'RangePickerEx', doc: 'src/RangePickerEx/index.md', demo: DemoRangePickerEx },
   { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
-  { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
+  // { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
   { name: 'ControlledForm', doc: 'src/ControlledForm/index.md', demo: DemoControlledForm },
 ];
 

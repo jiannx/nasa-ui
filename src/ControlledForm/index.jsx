@@ -27,22 +27,75 @@ export default class ControlledForm extends Component {
     onSubmit: () => {}, // 提交事件，进行校验
     onChange: (value) => {}, // 所有控件变更都会触发该事件
     value: {}, // 表单初始数据 Object
-    onValidate: () => {},
+    onValidate: (res) => { console.log(res) },
     itemProps: null,
   }
 
-  componentDidMount() {}
+  componentWillReceiveProps(nextProps) {
+    // 获取整个表单校验结果
+    if (this.props.onValidate && !_.isEqual(this.props.value, nextProps.value)) {
+      this.validateFrom(nextProps.value, false, formStatus => {
+        this.props.onValidate(formStatus);
+      });
+    }
+  }
+
+  componentDidMount() {
+    // 初始化时获取表单校验结果
+    if (this.props.onValidate) {
+      this.validateFrom(this.props.value, false, formStatus => {
+        this.props.onValidate(formStatus);
+      });
+    }
+  }
 
   componentDidUpdate() {}
 
+  // 表单校验
+  validateFrom = (data, isShowError = false, callback) => {
+    data = data || this.props.value;
+    let result = [];
+    let items = this.items.filter(x => x !== null && x !== undefined);
+
+    const allCheck = (res) => {
+      result.push(res);
+      if (result.length === items.length) {
+        // 触发外部事件
+        callback && callback(result.every(x => x.status === 'success'), result)
+      }
+    };
+    for (let node of items) {
+      node && node.checkValidate(_.get(data, node.props.dataIndex), isShowError, allCheck);
+    }
+  }
+
+  // 校验某个字段
+  validate = (key, isShowError = true, callback) => {
+    let item = this.items.find(x => x && x.props && x.props.dataIndex === key);
+    if (item) {
+      item.checkValidate(_.get(this.props.value, key), isShowError, callback);
+    }
+  }
+
+  onSubmit = () => {
+    this.validateFrom(this.props.value, true, formStatus => {
+      if (formStatus) {
+        this.props.onSubmit && this.props.onSubmit(this.props.value);
+      }
+    });
+  }
+
   // 控件数据变更
-  onItemChange = (key, value) => {
+  onItemChange(key, value) {
     let data = _.cloneDeep(this.props.value);
     _.set(data, key, value);
     this.props.onChange && this.props.onChange(data, key, value);
   }
 
-  deepClone = (doms) => {
+  deepClone(doms) {
+    if (doms === null || doms === undefined) {
+      return null;
+    }
     let cloneElements = [];
     React.Children.toArray(doms).forEach((element, index) => {
       // 纯文字组件处理
@@ -54,7 +107,7 @@ export default class ControlledForm extends Component {
         cloneElements.push(React.cloneElement(element, {
           onClick: e => {
             e.preventDefault();
-            console.log('submit');
+            this.onSubmit();
           }
         }));
       }
@@ -65,15 +118,16 @@ export default class ControlledForm extends Component {
             item && this.items.push(item);
           },
           data: this.props.value,
-          emitChange: this.onItemChange,
+          emitChange: this.onItemChange.bind(this),
           itemProps: this.props.itemProps
         }));
       }
       // 表单控件 非受控处理
       else if (isInstanceOfClass(element, Item) && !element.props.dataIndex) {
+        let children = this.deepClone(element.props.children);
         cloneElements.push(React.cloneElement(element, {
           itemProps: this.props.itemProps
-        }));
+        }, children));
       }
       // 非表单节点处理 递归处理
       else {
@@ -81,6 +135,7 @@ export default class ControlledForm extends Component {
         cloneElements.push(React.cloneElement(element, null, children));
       }
     });
+
     if (cloneElements.length === 1) {
       return cloneElements[0];
     }
@@ -189,14 +244,12 @@ class Item extends Component {
   }
 
   onBlur = (e) => {
-    console.log('blur');
     this.props.onBlur && this.props.onBlur(e);
     this.onChange(this.state.stashValue);
     this.setState({ focusing: false, stashValue: undefined });
   }
 
   onFocus = (e) => {
-    console.log('focus');
     this.props.onFocus && this.props.onFocus(e);
     this.setState({ stashValue: _.get(this.props.data, this.props.dataIndex) });
     this.setState({ focusing: true });
@@ -230,7 +283,7 @@ class Item extends Component {
     let decorator = this.renderDecorator(this.props.decorator);
 
     return (
-      <FormItem {...this.props} {...this.props.itemProps} help={this.state.help} validateStatus={this.state.validateStatus}>
+      <FormItem {...this.props.itemProps} {...this.props} help={this.state.help} validateStatus={this.state.validateStatus}>
         {decorator}
         {this.props.children}
       </FormItem>

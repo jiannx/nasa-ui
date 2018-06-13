@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Card, Spin, Input } from 'antd';
+import { Card, Spin, Input, Button, Radio, Slider, Row, Col, InputNumber } from 'antd';
 import { ControlledForm } from 'nasa-ui';
 
 const FormItem = ControlledForm.Item;
+const RadioGroup = Radio.Group;
 
 export default class Demo extends Component {
   constructor(props) {
@@ -12,7 +13,9 @@ export default class Demo extends Component {
       form1Data: {
         info: { name1: '默认值' },
         require: { defaultValue: '默认值' },
+        radio: { key1: 1 }
       },
+      form1Status: null
     };
   }
 
@@ -20,7 +23,9 @@ export default class Demo extends Component {
 
   componentWillReceiveProps(nextProps) {}
 
-  componentDidMount() {}
+  componentDidMount() {
+
+  }
 
   componentWillUnmount() {}
 
@@ -29,11 +34,18 @@ export default class Demo extends Component {
       <div>
         <ControlledForm
           value={this.state.form1Data}
+          itemProps={{ labelCol:{ span: 4 }, wrapperCol: {span: 16} }}
           onChange={(data, key, value) => {
             console.log('本次变更key: ' + key);
             this.setState({form1Data: data});
           }}
-          itemProps={{ labelCol:{ span: 4 }, wrapperCol: {span: 16} }}
+          onSubmit={(value) => {
+            alert('sbumit');
+          }}
+          onValidate={isValidate => {
+            this.setState({form1Status: isValidate})
+          }}
+          ref={form => this.form1 = form}
         >
           <h3>基本使用</h3>
           <FormItem
@@ -47,16 +59,44 @@ export default class Demo extends Component {
             decorator={<Input></Input>}
           />
           <FormItem
-            label="名称1"
-            dataIndex="info.name2"
-            decorator={<Input></Input>}
-          />
-          <FormItem
             label="必填项1"
             dataIndex="require.key1"
             required
             decorator={<Input></Input>}
           />
+          <FormItem
+            label="Radio"
+            dataIndex="radio.key1"
+            decorator={
+              <RadioGroup>
+                <Radio value={1}>A</Radio>
+                <Radio value={2}>B</Radio>
+                <Radio value={3}>C</Radio>
+                <Radio value={4}>D</Radio>
+              </RadioGroup>
+            }
+          />          
+          <FormItem
+            label="Radio"
+          >
+            <Row gutter={16}>
+              <Col span={16}>
+                <FormItem
+                  dataIndex="slide"
+                  wrapperCol={{span: 24}}
+                  decorator={
+                    <Slider min={1} max={20}/>
+                  }
+                />  
+              </Col>
+              <Col span={4}>
+                <FormItem
+                  dataIndex="slide"
+                  decorator={<InputNumber min={1} max={20} />}
+                /> 
+              </Col>
+            </Row>
+          </FormItem>    
           
           <h3>校验</h3>
           <FormItem
@@ -101,9 +141,20 @@ export default class Demo extends Component {
             trigger="onBlur"
             decorator={<Input></Input>}
           />
-          <div>
+          <FormItem
+            label="完整数据"
+          >
             {JSON.stringify(this.state.form1Data)}
-          </div>
+          </FormItem>
+          <FormItem
+            wrapperCol={{span: 12, offset: 4}}
+          >
+            <Button type="primary" htmlType="submit" disabled={!this.state.form1Status}>确定</Button>
+            <br/>
+            <Button onClick={() => this.form1.validate('rule1')}>手动校验 自定义规则1 显示错误</Button>
+            <br/>
+            <Button onClick={() => this.form1.validate('rule1', false, res => alert(res.status))}>手动校验 自定义规则1 不显示错误</Button>
+          </FormItem>
         </ControlledForm>
       </div>
     )
