@@ -1,4 +1,4 @@
-# 受控表单组建
+# 受控表单组件
 
 ControlledForm
 

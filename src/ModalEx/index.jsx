@@ -19,9 +19,9 @@
 
 import React, { Component } from 'react';
 import { Modal } from 'antd';
-import confirm from './confirm.jsx';
+import confirm from './confirm';
 import './style.scss';
-export message from './message.jsx';
+export message from './message';
 
 export default class ModalEx extends Component {
 
