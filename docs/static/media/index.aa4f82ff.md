@@ -26,10 +26,13 @@ FormItem
 ```jsx
 import { ControlledForm } from 'nasa-ui';
 const FormItem = ControlledForm.Item;
-
+let formLayout = {
+  labelCol: { span: 4 }, 
+  wrapperCol: { span:16 }
+};
 <ControlledForm
   value={this.state.form1Data}
-  itemProps={{ labelCol:{ span: 4 }, wrapperCol: {span: 16} }}
+  itemProps={formLayout}
   onChange={(data, key, value) => {
     console.log('本次变更key: ' + key);
     this.setState({form1Data: data});
