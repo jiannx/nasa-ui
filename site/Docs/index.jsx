@@ -21,6 +21,7 @@ const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
 const demos = [
+  { name: 'ControlledForm', doc: 'src/ControlledForm/index.md', demo: DemoControlledForm },
   { name: 'Echarts', doc: 'src/Echarts/index.md', demo: DemoEcharts, },
   { name: 'CopyTextToClipboard', doc: 'src/CopyTextToClipboard/index.md', demo: null },
   { name: 'MarkdownParser', doc: 'src/MarkdownParser/index.md', demo: null },
@@ -31,7 +32,7 @@ const demos = [
   { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
   // { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
-  { name: 'ControlledForm', doc: 'src/ControlledForm/index.md', demo: DemoControlledForm },
+
 ];
 
 

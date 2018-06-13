@@ -78,7 +78,8 @@ export default class ControlledForm extends Component {
   }
 
   onSubmit = () => {
-    this.validateFrom(this.props.value, true, formStatus => {
+    let data = _.cloneDeep(this.props.value);
+    this.validateFrom(data, true, formStatus => {
       if (formStatus) {
         this.props.onSubmit && this.props.onSubmit(this.props.value);
       }
