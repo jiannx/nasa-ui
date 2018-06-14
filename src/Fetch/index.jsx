@@ -20,25 +20,30 @@ export default class Fetch extends Component {
     history: [],
     params: null,
     cacheKey: null, // 定义该字段时，将在本地进行缓存，当history中最后一个对象+params+cacheKey这几个都未变更时，接口不发起
+    dataIndex: 'data',
     onRequest: params => params,
-    onResponse: res => ({ data: res }),
+    onResponse: res => res,
     component: null, // 子元素组件
-    onLoadingChange: null, // 状态变更事件
+    onLoading: null, // 状态变更事件
   }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(this.props.history, nextProps.history)) {
-      console.log(nextProps.history);
       setTimeout(this.getData);
     }
   }
 
   componentDidMount() {
+    this.setLoading(false);
     this.getData();
-    this.props.onLoadingChange && this.props.onLoadingChange(false);
   }
 
   componentWillUnmount() {}
+
+  setLoading = (loading) => {
+    this.setState({ loading });
+    this.props.onLoading && this.props.onLoading(loading);
+  }
 
   getCache = () => {
     let key = this.getActuallyCacheKey();
@@ -63,25 +68,20 @@ export default class Fetch extends Component {
   }
 
   requestSuccCallback = (res, requestParams) => {
-    let response = this.props.onResponse(res, requestParams);
+    let response = this.props.onResponse ? this.props.onResponse(res, requestParams) : res;
     if (this.props.cacheKey) {
       this.setCache(response);
     }
-    this.setState({
-      loading: false,
-      response: response
-    });
-    this.props.onLoadingChange && this.props.onLoadingChange(false);
+    this.setState({ response: response });
+    this.setLoading(false);
   }
 
   requestErrCallback = (res, requestParams) => {
-    this.setState({ loading: false });
-    this.props.onLoadingChange && this.props.onLoadingChange(false);
+    this.setLoading(false);
   }
 
   request = () => {
-    this.setState({ loading: true });
-    this.props.onLoadingChange && this.props.onLoadingChange(true);
+    this.setLoading(true);
 
     // 判定队列中是否有相同请求，如果开启缓存且队列中已存在，则不在请求
     let key = new Date().getTime();
@@ -119,10 +119,15 @@ export default class Fetch extends Component {
   }
 
   render() {
-    if (!this.props.component) {
+    if (!this.props.children) {
       return null;
     }
-    let props = { loading: this.state.loading, ...this.state.response };
-    return React.cloneElement(this.props.component, props);
+    let props = { loading: this.state.loading, [this.props.dataIndex]: this.state.response };
+
+    if (_.isArray(this.props.children)) {
+      return this.props.children.map(child => React.cloneElement(child, props));
+    }
+
+    return React.cloneElement(this.props.children, props);
   }
 }

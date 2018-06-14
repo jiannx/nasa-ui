@@ -13,7 +13,7 @@ function test(params) {
 }
 
 function Test(props) {
-  return <Spin spinning={props.loading}>请求响应，props完整数据：{JSON.stringify(props)}</Spin>
+  return <Spin spinning={props.loading}>组件名：{props.name}，props={JSON.stringify(props)}</Spin>
 }
 
 export default class Demo extends Component {
@@ -57,62 +57,61 @@ export default class Demo extends Component {
   render() {
     return (
       <div>
-        <h2>获取数据 <Button onClick={this.onHistoryA}>发起请求</Button></h2>
+        <h3>获取数据 <Button onClick={this.onHistoryA}>发起请求</Button></h3>
         <Fetch 
           api={test}
           history={this.state.historyA}
           params={{name: 'params中参数优先'}}
-          component={<Test></Test>}
           onLoadingChange={isLoading => console.log(isLoading)}
-        />
+        >
+          <Test name="name1"></Test>
+        </Fetch>
+        <Fetch 
+          api={test}
+          history={this.state.historyA}
+          params={{name: 'params中参数优先'}}
+          onLoadingChange={isLoading => console.log(isLoading)}
+          dataIndex="newdata"
+        >
+          <Test name="name2"></Test>
+        </Fetch>
         <br/>
-        <h2>响应数据处理 <Button onClick={this.onHistoryB}>发起请求</Button></h2>
+
+        <h3>响应数据处理 <Button onClick={this.onHistoryB}>发起请求</Button></h3>
         <Fetch 
           api={test}
           history={this.state.historyB}
           params={{name: 'params中参数优先'}}
-          component={<Test></Test>}
           onResponse={(res) => {
             return {
-              data: res,
+              res: res,
               newProps: 'onResponse中新加的参数'
             }
           }}
-        />
-
+        >
+          <Test></Test>
+        </Fetch>
         <br/>
-        <h2>缓存处理，以下两个相同cacheKey，只发起一个请求 <Button onClick={this.onHistoryC}>发起请求</Button></h2>
+
+        <h3>缓存：相同cacheKey、相同history、相同params，只发起一个请求 <Button onClick={this.onHistoryC}>发起请求</Button></h3>
         <Fetch 
           api={test}
           history={this.state.historyC}
           params={{name: 'params中参数优先'}}
-          component={<Test></Test>}
           cacheKey="historyC"
-        />
+        >
+          <Test></Test>
+        </Fetch>
         <Fetch 
           api={test}
           history={this.state.historyC}
           params={{name: 'params中参数优先'}}
-          component={<Test></Test>}
           cacheKey="historyC"
-        />
+        >
+          <Test></Test>
+        </Fetch>
 
         <br/>
-        <h2>缓存处理，每次请求cacheKey，history，params相同时，使用缓存 <Button onClick={this.onHistoryD}>发起请求</Button></h2>
-        <Fetch 
-          api={test}
-          history={this.state.historyD}
-          params={{name: 'params中参数优先'}}
-          component={<Test></Test>}
-          cacheKey="historyD"
-        />
-        <Fetch 
-          api={test}
-          history={this.state.historyD}
-          params={{name: 'params中参数优先'}}
-          component={<Test></Test>}
-          cacheKey="historyD"
-        />
       </div>
     )
   }

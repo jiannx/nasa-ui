@@ -24,10 +24,11 @@ export default class ControlledForm extends Component {
   }
 
   static defaultProps = {
+    className: '',
     onSubmit: () => {}, // 提交事件，进行校验
     onChange: (value) => {}, // 所有控件变更都会触发该事件
     value: {}, // 表单初始数据 Object
-    onValidate: (res) => { console.log(res) },
+    onValidate: null, // (res) => { console.log(res) }
     itemProps: null,
   }
 
@@ -147,7 +148,7 @@ export default class ControlledForm extends Component {
     this.items = [];
     let children = this.deepClone(this.props.children);
     return (
-      <Form>
+      <Form className={this.props.className}>
         {children}
       </Form>
     )

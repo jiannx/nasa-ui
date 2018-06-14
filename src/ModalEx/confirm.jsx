@@ -12,8 +12,7 @@ const CONFIRM_OPTIONS = {
 const DIV_ID = 'modal-ex-container';
 
 function createElement() {
-  let t = new Date();
-  let id = `${DIV_ID}-${t.valueOf()}`;
+  let id = `${DIV_ID}-${new Date().getTime()}`;
   let el = document.getElementById(id);
   if (!el) {
     el = document.createElement('div');
@@ -67,7 +66,7 @@ const confirm = (options) => {
   }
   // 是否包含取消按钮
   if (options.closeBtn === false) {
-    options.footer = <Button size="large" type={options.okType ? options.okType : 'primary'} onClick={handleOk}>{options.okText ? options.okText : '确定'}</Button>;
+    options.footer = <Button type={options.okType ? options.okType : 'primary'} onClick={handleOk}>{options.okText ? options.okText : '确定'}</Button>;
     if (!options.className) {
       options.className = 'nasa-modal-no-close';
     } else {

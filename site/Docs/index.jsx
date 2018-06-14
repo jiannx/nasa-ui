@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import { Route, Switch, Redirect } from 'react-router';
-import { Link, withRouter } from 'react-router-dom';
-import * as NasaUI from 'nasa-ui';
+import { withRouter } from 'react-router-dom';
 import { MarkdownParser } from 'nasa-ui';
 
 import DemoEcharts from './Demo/Echarts.jsx';
@@ -14,6 +12,8 @@ import DemoRangePickerEx from './Demo/RangePickerEx.jsx';
 import DemoFetch from './Demo/Fetch.jsx';
 import DemoSelectWithTree from './Demo/SelectWithTree.jsx';
 import DemoControlledForm from './Demo/ControlledForm.jsx';
+import DemoCopyTextToClipboard from './Demo/CopyTextToClipboard.jsx';
+import DemoMarkdownParserDemo from './Demo/MarkdownParser.jsx';
 
 import Test from './test.mdx';
 
@@ -22,17 +22,16 @@ const { Content, Sider } = Layout;
 
 const demos = [
   { name: 'ControlledForm', doc: 'src/ControlledForm/index.md', demo: DemoControlledForm },
+  { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
   { name: 'Echarts', doc: 'src/Echarts/index.md', demo: DemoEcharts, },
-  { name: 'CopyTextToClipboard', doc: 'src/CopyTextToClipboard/index.md', demo: null },
-  { name: 'MarkdownParser', doc: 'src/MarkdownParser/index.md', demo: null },
-  { name: 'Grid', doc: 'src/Grid/index.md', demo: DemoGrid },
   { name: 'TableEx', doc: 'src/TableEx/index.md', demo: DemoTableEx },
+  { name: 'CopyTextToClipboard', doc: 'src/CopyTextToClipboard/index.md', demo: DemoCopyTextToClipboard },
+  { name: 'MarkdownParser', doc: 'src/MarkdownParser/index.md', demo: DemoMarkdownParserDemo },
   { name: 'Interval', doc: 'src/Interval/index.md', demo: DemoInterval },
   { name: 'RangePickerEx', doc: 'src/RangePickerEx/index.md', demo: DemoRangePickerEx },
-  { name: 'Fetch', doc: 'src/Fetch/index.md', demo: DemoFetch },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
+  { name: 'Grid', doc: 'src/Grid/index.md', demo: DemoGrid },
   // { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
-
 ];
 
 
@@ -95,6 +94,7 @@ export default class Doc extends Component {
                     { x.demo && 
                       <div>
                         <br/>
+                        <h2>Demo</h2>
                         <x.demo></x.demo>
                       </div>
                     }

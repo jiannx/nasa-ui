@@ -1,6 +1,6 @@
 # 受控表单组件
 
-ControlledForm
+### ControlledForm
 
 |    参数    |                         说明                         |   类型   |  默认值  |
 |------------|------------------------------------------------------|----------|----------|
@@ -10,7 +10,9 @@ ControlledForm
 | onValidate | 每次数据变更时整个表单的校验状态                     | Function | null     |
 | itemProps  | Item的props，可将一些item的公共props放在此处，如布局 | Object   | null     |
 
-FormItem
+<br/>
+
+### FormItem
 
 |    参数   |                   说明                   |            类型            |   默认值   |
 |-----------|------------------------------------------|----------------------------|------------|
@@ -22,6 +24,9 @@ FormItem
 | trigger   | 数据变更方式                             | 'onChange' or 'onBlur'     | 'onChange' |
 | ...       | 其余参数参照Antd Form.Item               | ...                        |            |
 
+<br/>
+
+## 基本使用
 
 ```jsx
 import { ControlledForm } from 'nasa-ui';

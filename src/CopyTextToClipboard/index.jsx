@@ -2,16 +2,12 @@
  * 拷贝内容到剪切板
  */
 import React, { Component } from 'react';
-import { Icon, message } from 'antd';
+import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './style.scss';
 
-const defaultSuccessCallback = () => {
-  message.success('复制成功');
-}
-
-function copyTextToClipboard(text, successCallback = defaultSuccessCallback, failCallback) {
+function copyTextToClipboard(text, successCallback, failCallback) {
   let textArea = document.createElement("textarea")
   textArea.style.width = '0';
   textArea.style.height = '0';
