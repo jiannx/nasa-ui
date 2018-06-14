@@ -3,6 +3,7 @@ import { Layout, Menu, Icon } from 'antd';
 import { Route, Switch, Redirect } from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { MarkdownParser } from 'nasa-ui';
+import marked from 'marked';
 
 import DemoEcharts from './Demo/Echarts.jsx';
 import DemoTableEx from './Demo/TableEx.jsx';
@@ -19,6 +20,13 @@ import Test from './test.mdx';
 
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
+var renderer = new marked.Renderer();
+
+renderer.code = function(code, lang) {
+  return '<pre>' +
+    '<code class="hljs ' + lang + '">' + code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code>' +
+    '</pre>';
+};
 
 const demos = [
   { name: 'ControlledForm', doc: 'src/ControlledForm/index.md', demo: DemoControlledForm },
@@ -90,7 +98,11 @@ export default class Doc extends Component {
               {this.state.demos.map(x => 
                 <Route key={x.name} exact path={`/doc/${x.name}`} render={() => 
                   <div>
-                    <MarkdownParser src={require(`../../src/${x.name}/index.md`)} className="doc-md"></MarkdownParser>
+                    <MarkdownParser src={require(`../../src/${x.name}/index.md`)} className="doc-md" 
+                      option={{
+                        renderer: renderer,
+                    }}>
+                    </MarkdownParser>
                     { x.demo && 
                       <div>
                         <br/>

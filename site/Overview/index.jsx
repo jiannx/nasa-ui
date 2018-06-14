@@ -20,7 +20,6 @@ export default class Profile extends Component {
   render() {
     return (
       <div style={{width: 1000, margin: 'auto', padding: '50px 0'}}>
-        <h1>基于Antd的组件库</h1>
         <MarkdownParser src={doc}></MarkdownParser>
       </div>
     )

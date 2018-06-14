@@ -27,7 +27,7 @@ export default class MarkdownParser extends Component {
         this.setState({ html });
       });
     } else if (this.props.value) {
-      let html = marked(this.props.value);
+      let html = marked(this.props.value, this.props.option);
       this.setState({ html });
     }
   }

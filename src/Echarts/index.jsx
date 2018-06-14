@@ -43,8 +43,6 @@ class Echarts extends Component {
       return;
     }
 
-    console.log(nextProps.data)
-
     setTimeout(() => {
       this.draw();
     });

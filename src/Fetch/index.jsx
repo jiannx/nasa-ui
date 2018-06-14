@@ -23,8 +23,7 @@ export default class Fetch extends Component {
     dataIndex: 'data',
     onRequest: params => params,
     onResponse: res => res,
-    component: null, // 子元素组件
-    onLoading: null, // 状态变更事件
+    onLoadingChange: null, // 状态变更事件
   }
 
   componentWillReceiveProps(nextProps) {
@@ -42,7 +41,7 @@ export default class Fetch extends Component {
 
   setLoading = (loading) => {
     this.setState({ loading });
-    this.props.onLoading && this.props.onLoading(loading);
+    this.props.onLoadingChange && this.props.onLoadingChange(loading);
   }
 
   getCache = () => {

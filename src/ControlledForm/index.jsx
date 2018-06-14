@@ -17,6 +17,11 @@ function isInstanceOfClass(instance, classConstructor) {
   return false;
 }
 
+// todo性能优化
+function cloneDeep(data, key) {
+  return _.cloneDeep(data);
+}
+
 export default class ControlledForm extends Component {
   constructor(props) {
     super(props);
@@ -25,8 +30,8 @@ export default class ControlledForm extends Component {
 
   static defaultProps = {
     className: '',
-    onSubmit: () => {}, // 提交事件，进行校验
-    onChange: (value) => {}, // 所有控件变更都会触发该事件
+    onSubmit: null, // 提交事件，进行校验
+    onChange: null, // 所有控件变更都会触发该事件
     value: {}, // 表单初始数据 Object
     onValidate: null, // (res) => { console.log(res) }
     itemProps: null,
@@ -79,7 +84,7 @@ export default class ControlledForm extends Component {
   }
 
   onSubmit = () => {
-    let data = _.cloneDeep(this.props.value);
+    let data = cloneDeep(this.props.value);
     this.validateFrom(data, true, formStatus => {
       if (formStatus) {
         this.props.onSubmit && this.props.onSubmit(this.props.value);
@@ -89,7 +94,7 @@ export default class ControlledForm extends Component {
 
   // 控件数据变更
   onItemChange(key, value) {
-    let data = _.cloneDeep(this.props.value);
+    let data = cloneDeep(this.props.value);
     _.set(data, key, value);
     this.props.onChange && this.props.onChange(data, key, value);
   }
@@ -179,7 +184,7 @@ class Item extends Component {
   }
 
   static defaultProps = {
-    label: '',
+    label: null,
     dataIndex: null,
     rules: [],
     decorator: null,
@@ -197,7 +202,7 @@ class Item extends Component {
       message: ''
     };
     if (!this.validator) {
-      this.rules = _.cloneDeep(this.props.rules);
+      this.rules = [...this.props.rules];
       if (this.props.required === true) {
         this.rules.push({ required: 'true', message: '必填项' });
       }

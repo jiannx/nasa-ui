@@ -4,10 +4,10 @@
 
 |    参数    |                         说明                         |   类型   |  默认值  |
 |------------|------------------------------------------------------|----------|----------|
-| onSubmit   | 表单提交按钮事件                                     | Function | () => {} |
-| onChange   | 数据变更事件，必填                                   | Function | () => {} |
-| value      | 数据，必填                                           | Object   | null     |
-| onValidate | 每次数据变更时整个表单的校验状态                     | Function | null     |
+| onSubmit   | 表单提交按钮事件，参数为完整数据的备份，可直接进行操作        | Function(data) | null |
+| onChange   | 数据变更事件，参数为变更后的完整数据、本次变更对应dataIndex、本次变更对应value。必填 | Function(data, key, value) | null |
+| value      | 数据。必填                                           | Object   | {}     |
+| onValidate | 每次数据变更时整个表单的校验状态。参数为表单是否校通过 | Function(boolen) | null     |
 | itemProps  | Item的props，可将一些item的公共props放在此处，如布局 | Object   | null     |
 
 <br/>
@@ -17,9 +17,9 @@
 |    参数   |                   说明                   |            类型            |   默认值   |
 |-----------|------------------------------------------|----------------------------|------------|
 | label     | 标题                                     | String                     | ''         |
-| dataIndex | 数据索引，未传入该参数，Item将不绑定数据 | String                     | ''         |
-| rules     | 校验规则                                 | Array                      | []         |
-| decorator | 被包装的受控组建                         | Component, dataIndex时必填 | null       |
+| dataIndex | 数据索引，未传入该参数，Item将不绑定数据 | String                     | null         |
+| rules     | 校验规则，参照[async-validator](https://github.com/yiminghe/async-validator)      | Array                      | []         |
+| decorator | 被包装的受控组建                         | Component | null       |
 | required  | 当前字段是否必填                         | Boolen                     | false      |
 | trigger   | 数据变更方式                             | 'onChange' or 'onBlur'     | 'onChange' |
 | ...       | 其余参数参照Antd Form.Item               | ...                        |            |

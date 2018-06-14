@@ -1,15 +1,19 @@
-## 弹窗组件说明
+# 弹窗组件
+
+ModalEx.confirm
+
+|      参数     |                                             说明                                            |      类型     |     默认值     |
+|---------------|---------------------------------------------------------------------------------------------|---------------|----------------|
+| title           | 标题                                                              | String       | ''     |
+| content       | 正文组件                 | React Component | null             |
+| onOk        | 默认确定按钮事件，参数为关闭弹窗函数           | Function(close)        | null             |
+| onCancel      | 弹窗关闭事件 | Function        | null           |
+| footer      | 底部菜单 | React Component or false        |            |
+|... | 其余参数参照Antd RangePicker | ... | |
 
 <br />
 
-> 适用于表单弹窗
-
-** 注：content的组件中需定义handleOk，当弹窗点击确定时，将调用该方法，参数为关闭弹窗的回调函数 **
-
-<br />
-<br />
-
-### API
+## 基本使用
 
 ```
 import { ModalEx } from 'nasa-ui';

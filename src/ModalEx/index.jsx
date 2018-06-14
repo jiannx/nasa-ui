@@ -2,19 +2,6 @@
  * 弹窗定制版 
  * 在antd的Modal上封装了弹出隐藏等基本逻辑
  * 参数参照antd Modal
- * Api:
- * ref.show(title)
- *      
-<ModalEx title="日志下载" 
-  ref={ modal => this.modalLog = modal} 
-  onOk={(close) => { close(); }} 
-  onInit={() => { console.log('init') }} 
-  onShow={() => { console.log('show') }}
->
-  children
-</ModalEx>
-<Button onClick={()=>{ this.modalLog.show('新标题') }}>下载日志</Button>
-<Button onClick={()=>{ this.modalLog.show() }}>下载日志</Button>
  */
 
 import React, { Component } from 'react';

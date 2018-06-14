@@ -4,17 +4,17 @@
 |      参数     |                                            说明                                           |      类型     |             默认值              |
 |---------------|-------------------------------------------------------------------------------------------|---------------|---------------------------------|
 | data          | 数据项，该数据将作为render的参数，当未定义render时，此属性必须为echart可解析的options对象 | Any           | null                            |
-| render        | 图表配置函数，参数为data或者api返回数据                                                   | Function      | () => {}                        |
-| echartsUrl    | echart库文件地址，可以为cdn地址                                                           | String        | 'vendor/echarts/echarts.min.js' |
-| className     | 样式名                                                                                    | String        | ''                              |
-| style         | 样式                                                                                      | Object        | null                            |
+| render        | 图表配置函数，参数为data或者api返回数据，该函数需返回echart可解析的options对象         | Function      | null                      |
+| echartsUrl    | echart库文件地址，可以为cdn地址        | String        | 'vendor/echarts/echarts.min.js' |
+| className     | 样式名                        | String        | ''                              |
+| style         | 样式                       | Object        | null                            |
 | loading       | 受控loading状态                                                                           | bool          | null                            |
-| optionIsMerge | setOption时是否合并数据 http://echarts.baidu.com/api.html#echartsInstance.setOption       | bool          | false                           |
+| optionIsMerge | setOption时是否合并数据，多次更新数据时注意 http://echarts.baidu.com/api.html#echartsInstance.setOption       | bool          | false                           |
 | isAutoResize  | 是否自动随浏览器调整大小                                                                  | bool          | true                            |
-| api           | Api请求接口，必须为Promise对象                                                            | Promise       | null                            |
-| params        | Object 请求参数，将优先于history                                                          | Object        | {}                              |
-| history       | 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表                                   | array[Object] | []                              |
-| onResponse    | 响应后数据格式化，api参数存在时才有效                                                     | Function      | res => res                      |
+| api           | Api请求接口，参照Fetch                                                           | Promise       | null                            |
+| params        | 请求参数，参照Fetch                                                          | Object        | {}                              |
+| history       | 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表，参照Fetch                                 | array[Object] | []                              |
+| onResponse    | 响应后数据格式化，api参数存在时才有效，参照Fetch                                            | Function      | res => res                      |
 | ...           | 其余参数参照Fetch                                                                         | ...           | ...                             |
 
 
