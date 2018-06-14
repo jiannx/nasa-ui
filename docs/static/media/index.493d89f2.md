@@ -10,3 +10,23 @@
 | onTrigger       | 倒计时最后执行函数                     | Function | null                                                                                    |
 | repeat          | 是否循环                               | bool     | true                                                                                    |
 | countdownFormat | 倒计时格式化                           | String   | 'mm:ss'                                                                                 |                                                                                     |
+
+## 基本使用
+
+```jsx
+import { Interval } from 'nasa-ui';
+
+<Interval ></Interval>
+
+<Interval interval={60}></Interval>
+
+<Interval 
+  interval={10} 
+  countdownFormat="mm:ss" 
+  repeat={true} 
+  render={time => time} 
+  onTrigger={() => console.log('Interval next repeat')}
+/>
+
+<Interval countdownFormat="mm--ss"></Interval>
+```

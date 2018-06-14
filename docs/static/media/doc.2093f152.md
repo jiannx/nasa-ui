@@ -1,4 +1,7 @@
+# 基于Antd的组件库封装
+
 ## 使用方式
+
 ```js
 npm install nasa-ui
 或者
@@ -6,18 +9,20 @@ yarn add nasa-ui
 
 // 使用
 import { Echarts } from 'nasa-ui';
+
+// 全局配置
+Echarts.defaultProps.echartsUrl = 'https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts.min.js';
 ```
 
 ## 相关命令
 1. 开发
 ```
-npm run start // 文档网站运行
+npm run start // 网站运行
 ```
 
 2. 发布
 ```
 npm run build // 将代码babel编辑到lib文件夹
-npm run publish
 ```
 
 3. 生成文档
