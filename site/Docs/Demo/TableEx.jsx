@@ -7,19 +7,18 @@ import { TableEx } from 'nasa-ui';
 
 
 function test(params) {
-  return axios({ url: '/api/workorder/list', params });
-  // return new Promise((resolve, reject) => {
-  //   let res = {
-  //     list: [{ name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }],
-  //     pageSize: Math.ceil(Math.random() * 30),
-  //     current: Math.ceil(Math.random() * 10),
-  //     total: Math.ceil(Math.random() * 100)
-  //   };
-  //   console.info('发起请求', params);
-  //   setTimeout(() => {
-  //     resolve(res);
-  //   }, 2000);
-  // });
+  return new Promise((resolve, reject) => {
+    let res = {
+      list: [{ name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }],
+      pageSize: Math.ceil(Math.random() * 30),
+      current: params.current ? params.current : Math.ceil(Math.random() * 10),
+      total: Math.ceil(Math.random() * 100)
+    };
+    console.info('发起请求', params);
+    setTimeout(() => {
+      resolve(res);
+    }, 2000);
+  });
 }
 
 TableEx.defaultProps.onRequest = (params) => {
@@ -30,13 +29,12 @@ TableEx.defaultProps.onRequest = (params) => {
   };
 };
 
-TableEx.defaultProps.onResponse = ({ data }) => {
-  let res = data.data;
+TableEx.defaultProps.onResponse = (res) => {
   return {
-    list: res.data,
-    pageSize: res.page_rows,
-    current: res.page_now,
-    total: res.records,
+    list: res.list,
+    pageSize: res.pageSize,
+    current: res.current,
+    total: res.total,
   };
 };
 
@@ -80,6 +78,7 @@ export default class DemoTable extends Component {
         <TableEx
           columns={columns}
           data={data1}
+          onChange={(pagination, filters, sorter) => alert(JSON.stringify({pagination, filters, sorter}))}
         />
         <br/>
         <h2>不包含分页</h2>
@@ -87,6 +86,7 @@ export default class DemoTable extends Component {
           columns={columns}
           data={data1}
           pagination={false}
+          onChange={(pagination, filters, sorter) => console.log(pagination, filters, sorter)}
         />
         <br/>
         <h2>异步请求 <Button onClick={this.onTestApi}>发起请求</Button></h2>
@@ -98,17 +98,7 @@ export default class DemoTable extends Component {
             defaultPageSize: 5
           }}
         />
-        <h2>CDN分页测试 <Button onClick={this.onTestApi}>发起请求</Button></h2>
-        <TableEx
-          api={test}
-          columns={columns}
-          history={this.state.history}
-          pagination={{
-            size: 'small',
-            defaultPageSize: 5
-          }}
-        />
-        <h2>受控页码 <Button onClick={this.onTestApi}>发起请求</Button></h2>
+        <h2>受控页码 <Button onClick={this.onTestApi}>发起请求</Button> <Button onClick={() => this.setState({currentPage: 1})}>设置页码为1</Button></h2>
         <TableEx
           api={test}
           columns={columns}

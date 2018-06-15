@@ -15,7 +15,7 @@ function assert(condition, info) {
 class Echarts extends Component {
   constructor(props) {
     super(props);
-    this.id = `nase-chart-${new Date().getTime()}`;
+    this.id = `nase-chart-${new Date().getTime()}-${Math.random()}`;
     this.state = {
       id: this.id,
       instance: null,
@@ -36,6 +36,19 @@ class Echarts extends Component {
 
   componentDidMount() {
     this.draw();
+
+    this.onResize = _.debounce(() => {
+      this.state.instance && this.state.instance.resize();
+    }, 300);
+
+    if (this.props.isAutoResize) {
+      window.addEventListener('resize', this.onResize);
+    }
+  }
+
+  componentWillUnmount() {
+    window.echarts && window.echarts.dispose(this.state.instance);
+    window.removeEventListener('resize', this.onResize);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -46,6 +59,22 @@ class Echarts extends Component {
     setTimeout(() => {
       this.draw();
     });
+  }
+
+  // 调整大小，不重绘
+  resize = () => {
+    let { instance } = this.state;
+    let { clientWidth, clientHeight } = document.getElementById(this.state.id);
+    instance.resize({ height: clientHeight, width: clientWidth });
+  }
+
+  // 重绘
+  refresh = () => {
+    this.draw();
+  }
+
+  getInstance = () => {
+    return this.state.instance;
   }
 
   async mergeOptions() {
@@ -94,18 +123,14 @@ class Echarts extends Component {
 
   render() {
     let loading = this.props.loading;
-    if (this.props.loading === false || this.props.loading === true) {
-      loading = this.props.loading;
-    }
 
     return (
       <div className={`nase-chart ${this.props.className}`} style={this.props.style}>
-        <Spin spinning={loading} delay={0} className="spin-loading">
-          <div id={this.state.id} style={{width: '100%', height: '100%'}}></div>
-          { this.state.component && 
-            <div style={{width: '100%', height: '100%', position: 'absolute', left: '0', top: '0'}}>{this.state.component}</div>
-          }
-        </Spin>
+        {loading && <Spin></Spin>}
+        <div className={`nase-chart_content ${loading && 'blur'}`} id={this.state.id}></div>
+        { this.state.component && 
+          <div className="nase-chart_content">{this.state.component}</div>
+        }
       </div>
     )
   }
@@ -113,7 +138,7 @@ class Echarts extends Component {
 }
 
 
-export default class Container extends Component {
+class Container extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -135,23 +160,19 @@ export default class Container extends Component {
     isAutoResize: true, // 自动调整浏览器大小
   }
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
   render() {
-
     if (this.props.api) {
       return (
-        <Fetch {...this.props}>
-          <Echarts {...this.props}></Echarts>
+        <Fetch {...this.props} ref={this.props.forwardedRef}>
+          <Echarts {...this.props} ref={this.props.forwardedRef}></Echarts>
         </Fetch>
       )
     }
-    
-    if (this.props.data) {
-      return <Echarts {...this.props}></Echarts>;
-    }
 
+    return <Echarts {...this.props} ref={this.props.forwardedRef}></Echarts>;
   }
 }
+
+export default React.forwardRef((props, ref) => {
+  return <Container {...props} forwardedRef={ref} />;
+});

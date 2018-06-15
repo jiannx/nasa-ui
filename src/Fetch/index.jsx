@@ -121,6 +121,7 @@ export default class Fetch extends Component {
     if (!this.props.children) {
       return null;
     }
+    
     let props = { loading: this.state.loading, [this.props.dataIndex]: this.state.response };
 
     if (_.isArray(this.props.children)) {

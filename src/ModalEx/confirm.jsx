@@ -12,7 +12,7 @@ const CONFIRM_OPTIONS = {
 const DIV_ID = 'modal-ex-container';
 
 function createElement() {
-  let id = `${DIV_ID}-${new Date().getTime()}`;
+  let id = `${DIV_ID}-${new Date().getTime()}-${Math.random()}`;
   let el = document.getElementById(id);
   if (!el) {
     el = document.createElement('div');

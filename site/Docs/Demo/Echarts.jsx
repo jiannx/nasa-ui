@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Icon } from 'antd';
 import { Echarts } from 'nasa-ui';
 
 
@@ -20,7 +20,7 @@ function optionRender(data = [{ value: 135, name: '默认数据' }]) {
     series: [{
       name: '访问来源',
       type: 'pie',
-      center: ['50%', '60%'],
+      center: ['50%', '50%'],
       data: data,
     }]
   }
@@ -58,6 +58,7 @@ export default class DemoEchart extends Component {
               echartsUrl="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts.min.js"
               data={optionRender()}
               style={{height: 200}}
+              ref={e => console.log(e)}
             />
           </Col>
           <Col span={12}>
@@ -81,7 +82,8 @@ export default class DemoEchart extends Component {
           history={this.state.history}
           render={optionRender}
           style={{height: 200}}
-        />        
+        />  
+              
         <h3>定义api，onResponse <Button onClick={this.onGetData}>获取数据</Button></h3>
         <Echarts
           echartsUrl="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts.min.js"
@@ -89,6 +91,17 @@ export default class DemoEchart extends Component {
           history={this.state.history}
           render={optionRender}
           onResponse={res => res.concat([{value: Math.random() * 100, name: '响应中新加数据1' }])}
+          style={{height: 200}}
+        />   
+
+        <h3>render返回节点 <Button onClick={this.onGetData}>获取数据</Button></h3>
+        <Echarts
+          echartsUrl="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts.min.js"
+          api={getData}
+          history={this.state.history}
+          render={() => 
+            <div style={{textAlign: 'center', lineHeight: '200px'}}><Icon type="exclamation-circle" /> 暂无数据</div>
+          }
           style={{height: 200}}
         />   
       </div>

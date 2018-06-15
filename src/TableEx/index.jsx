@@ -77,14 +77,15 @@ export default class TableEx extends Component {
   }
 
   onChange = (pagination, filters, sorter) => {
+    if (!this.props.api) {
+      this.props.onChange && this.props.onChange(pagination, filters, sorter);
+      return;
+    }
     // 分页状态未变更，则为过滤条件变更
     if (_.isEqual(pagination, this.state.pagination)) {
       let filterParam = this.props.onChange(pagination, filters, sorter);
-      if (!filterParam) {
-        this.refresh({
-          filters,
-          sorter: { columnKey: sorter.columnKey, field: sorter.field, order: sorter.order }
-        });
+      if (filterParam) {
+        this.refresh(filterParam);
       }
     }
     // 分页请求
@@ -104,6 +105,10 @@ export default class TableEx extends Component {
         this.setState({ pagination }, this.refresh);
       }
     }
+  }
+
+  getData = () => {
+    return this.state.data;
   }
 
   setData = (data) => {
