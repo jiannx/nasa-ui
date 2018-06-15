@@ -13,7 +13,7 @@ Pull requests and stars are always welcome. For bugs and feature requests, [plea
 
 ## Team
 
-[![Silence Lu](https://avatars0.githubusercontent.com/u/4410030?s=460&v=4)](https://github.com/milolu) | [![shownoso](https://avatars0.githubusercontent.com/u/20788093?s=460&v=4)](https://github.com/shownoso)
+[![Silence Lu](https://avatars0.githubusercontent.com/u/4410030?s=100&v=4)](https://github.com/milolu) | [![shownoso](https://avatars0.githubusercontent.com/u/20788093?s=100&v=4)](https://github.com/shownoso)
 ---|---
 [Silence Lu](https://github.com/milolu) | [shownoso](https://github.com/shownoso)
 
