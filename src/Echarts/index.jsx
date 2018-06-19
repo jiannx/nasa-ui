@@ -3,7 +3,6 @@ import { Spin } from 'antd';
 import _ from 'lodash';
 import { loadEcharts } from './help.js';
 import './style.scss';
-
 import Fetch from '../Fetch';
 
 function assert(condition, info) {
@@ -12,31 +11,35 @@ function assert(condition, info) {
   }
 }
 
-class Echarts extends Component {
+export default class Echarts extends Component {
   constructor(props) {
     super(props);
     this.id = `nase-chart-${new Date().getTime()}-${Math.random()}`;
     this.state = {
       id: this.id,
-      instance: null,
+      instance: undefined,
       loading: false,
+      data: props.data,
     };
   }
 
   static defaultProps = {
+    api: null, // Api 请求接口
+    params: {}, // Object 请求参数，将优先于history。
+    history: [], // array[Object] 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表。保存时间等公共参数
+    onResponse: undefined, // Function 响应后数据格式化，api参数存在时才有效
+
+    data: undefined, // Object 数据项或图表配置项
+    render: null, // Function 图表配置项
     echartsUrl: 'vendor/echarts/echarts.min.js', // echart库文件地址
     className: '',
     style: null,
-    render: null, // Function 图表配置项
-    data: null, // Object 数据项或图表配置项
-    loading: null, // bool 受控loading状态
+    loading: false, // bool 受控loading状态
     optionIsMerge: false, // setOption时是否合并数据 http://echarts.baidu.com/api.html#echartsInstance.setOption
     isAutoResize: true, // 自动调整浏览器大小
   }
 
   componentDidMount() {
-    this.draw();
-
     this.onResize = _.debounce(() => {
       this.state.instance && this.state.instance.resize();
     }, 300);
@@ -44,6 +47,8 @@ class Echarts extends Component {
     if (this.props.isAutoResize) {
       window.addEventListener('resize', this.onResize);
     }
+
+    this.draw();
   }
 
   componentWillUnmount() {
@@ -52,13 +57,12 @@ class Echarts extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (_.isEqual(this.props.data, nextProps.data)) {
-      return;
+    // 处理数据变更，与api相关的全部由Fetch处理
+    if (!this.props.api && !_.isEqual(this.props.data, nextProps.data)) {
+      setTimeout(() => {
+        this.setState({ data: this.props.data }, this.draw);
+      });
     }
-
-    setTimeout(() => {
-      this.draw();
-    });
   }
 
   // 调整大小，不重绘
@@ -80,14 +84,15 @@ class Echarts extends Component {
   async mergeOptions() {
     let option = null;
     if (this.props.render && _.isFunction(this.props.render)) {
-      option = await this.props.render(this.props.data);
+      option = await this.props.render(this.state.data);
     } else {
-      option = this.props.data;
+      option = this.state.data;
     }
     return option;
   }
 
   async draw() {
+    console.log('Echarts draw');
     // 获取echart实例
     let { instance } = this.state;
     if (!instance) {
@@ -110,22 +115,38 @@ class Echarts extends Component {
         }
       }
     }
-    let option = await this.mergeOptions();
+    let option = await this.mergeOptions() || {};
     assert(_.isPlainObject(option), 'option must be Object');
 
     if (React.isValidElement(option)) {
       this.setState({ component: option });
+      instance.setOption({}, !this.props.optionIsMerge);
     } else {
       this.setState({ component: null });
+      instance.setOption(option, !this.props.optionIsMerge);
     }
-    instance.setOption(option, !this.props.optionIsMerge);
+  }
+
+  onFetchResponse = (res) => {
+    res = this.props.onResponse ? this.props.onResponse(res) : res;
+    this.setState({ data: res }, this.draw);
   }
 
   render() {
-    let loading = this.props.loading;
+    let loading = this.state.loading;
 
     return (
       <div className={`nase-chart ${this.props.className}`} style={this.props.style}>
+        {this.props.api && 
+          <Fetch 
+            api={this.props.api}
+            history={this.props.history}
+            params={this.props.params}
+            onRequest={this.props.onRequest}
+            onResponse={this.onFetchResponse}
+            onLoadingChange={loading => this.setState({ loading })}
+          />
+        }
         {loading && <Spin></Spin>}
         <div className={`nase-chart_content ${loading && 'blur'}`} id={this.state.id}></div>
         { this.state.component && 
@@ -136,43 +157,3 @@ class Echarts extends Component {
   }
 
 }
-
-
-class Container extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  static defaultProps = {
-    api: null, // Api 请求接口
-    params: {}, // Object 请求参数，将优先于history。
-    history: [], // array[Object] 请求参数，api参数存在时才有效, 变更此数组，强制刷新图表。保存时间等公共参数
-    onResponse: undefined, // Function 响应后数据格式化，api参数存在时才有效
-
-    echartsUrl: 'vendor/echarts/echarts.min.js', // echart库文件地址
-    className: '',
-    style: null,
-    render: null, // Function 图表配置项，优先级 该参数>type中定义的配置项
-    data: null, // Object 数据项或图表配置项
-    loading: null, // bool 受控loading状态
-    optionIsMerge: false, // setOption时是否合并数据 http://echarts.baidu.com/api.html#echartsInstance.setOption
-    isAutoResize: true, // 自动调整浏览器大小
-  }
-
-  render() {
-    if (this.props.api) {
-      return (
-        <Fetch {...this.props} ref={this.props.forwardedRef}>
-          <Echarts {...this.props} ref={this.props.forwardedRef}></Echarts>
-        </Fetch>
-      )
-    }
-
-    return <Echarts {...this.props} ref={this.props.forwardedRef}></Echarts>;
-  }
-}
-
-export default React.forwardRef((props, ref) => {
-  return <Container {...props} forwardedRef={ref} />;
-});
