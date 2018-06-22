@@ -18,7 +18,7 @@ function isInstanceOfClass(instance, classConstructor) {
 }
 
 // todo性能优化
-function cloneDeep(data, key) {
+function clone(data, key) {
   return _.cloneDeep(data);
 }
 
@@ -40,25 +40,25 @@ export default class ControlledForm extends Component {
   componentWillReceiveProps(nextProps) {
     // 获取整个表单校验结果
     if (this.props.onValidate && !_.isEqual(this.props.value, nextProps.value)) {
-      this.validateFrom(nextProps.value, false, formStatus => {
+      this.validateFrom(false, formStatus => {
         this.props.onValidate(formStatus);
-      });
+      }, nextProps.value);
     }
   }
 
   componentDidMount() {
     // 初始化时获取表单校验结果
     if (this.props.onValidate) {
-      this.validateFrom(this.props.value, false, formStatus => {
+      this.validateFrom(false, formStatus => {
         this.props.onValidate(formStatus);
-      });
+      }, this.props.value);
     }
   }
 
   componentDidUpdate() {}
 
   // 表单校验
-  validateFrom = (data, isShowError = false, callback) => {
+  validateFrom = (isShowError = false, callback, data) => {
     data = data || this.props.value;
     let result = [];
     let items = this.items.filter(x => x !== null && x !== undefined);
@@ -76,25 +76,25 @@ export default class ControlledForm extends Component {
   }
 
   // 校验某个字段
-  validate = (key, isShowError = true, callback) => {
-    let item = this.items.find(x => x && x.props && x.props.dataIndex === key);
+  validate = (dataIndex, isShowError = true, callback) => {
+    let item = this.items.find(x => x && x.props && x.props.dataIndex === dataIndex);
     if (item) {
-      item.checkValidate(_.get(this.props.value, key), isShowError, callback);
+      item.checkValidate(_.get(this.props.value, dataIndex), isShowError, callback);
     }
   }
 
   onSubmit = () => {
-    let data = cloneDeep(this.props.value);
-    this.validateFrom(data, true, formStatus => {
+    let data = clone(this.props.value);
+    this.validateFrom(true, formStatus => {
       if (formStatus) {
         this.props.onSubmit && this.props.onSubmit(this.props.value);
       }
-    });
+    }, data);
   }
 
   // 控件数据变更
   onItemChange(key, value) {
-    let data = cloneDeep(this.props.value);
+    let data = clone(this.props.value);
     _.set(data, key, value);
     this.props.onChange && this.props.onChange(data, key, value);
   }
@@ -120,6 +120,7 @@ export default class ControlledForm extends Component {
       }
       // 表单控件处理
       else if (isInstanceOfClass(element, Item) && element.props.dataIndex) {
+        let children = this.deepClone(element.props.children);
         cloneElements.push(React.cloneElement(element, {
           ref: item => {
             item && this.items.push(item);
@@ -127,7 +128,7 @@ export default class ControlledForm extends Component {
           data: this.props.value,
           emitChange: this.onItemChange.bind(this),
           itemProps: this.props.itemProps
-        }));
+        }, children));
       }
       // 表单控件 非受控处理
       else if (isInstanceOfClass(element, Item) && !element.props.dataIndex) {

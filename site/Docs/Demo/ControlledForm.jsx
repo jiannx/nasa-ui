@@ -149,13 +149,16 @@ export default class Demo extends Component {
           <FormItem
             wrapperCol={{span: 12, offset: 4}}
           >
-            <Button type="primary" htmlType="submit" disabled={!this.state.form1Status}>确定</Button>
+            <Button type="primary" htmlType="submit" disabled={!this.state.form1Status}>确定1</Button>&nbsp;
+            <Button type="primary" htmlType="submit">确定2</Button>
             <br/>
             <Button onClick={() => this.form1.validate('rule1')}>手动校验 自定义规则1 显示错误</Button>
             <br/>
             <Button onClick={() => this.form1.validate('rule1', false, res => alert(res.status))}>手动校验 自定义规则1 不显示错误</Button>
           </FormItem>
+
         </ControlledForm>
+
       </div>
     )
   }

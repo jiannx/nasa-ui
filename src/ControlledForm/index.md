@@ -26,6 +26,17 @@
 
 <br/>
 
+### 方法
+
+|                    名称                    |                                描述                               |
+|--------------------------------------------|-------------------------------------------------------------------|
+| validateFrom(isShowError, callback)        | 校验表单 参数: Bool是否显示错误, Func回调函数                     |
+| validate(dataIndex, isShowError, callback) | 校验某个值 参数: String校验的索引, Bool是否显示错误, Func回调函数 |
+| onSubmit                                   | 触发提交事件                                                      |
+
+
+<br/>
+
 ## 基本使用
 
 ```jsx
