@@ -50,7 +50,13 @@ export default class Fetch extends Component {
     if (!value) {
       return null;
     }
-    return JSON.parse(window.sessionStorage.getItem(key) || '{}');
+    let res = {};
+    try {
+      res = JSON.parse(window.sessionStorage.getItem(key) || '{}');
+    } catch (err) {
+      res = {};
+    }
+    return res;
   }
 
   setCache = (value) => {
@@ -66,16 +72,17 @@ export default class Fetch extends Component {
     return `${JSON.stringify(this.props.cacheKey)}-${JSON.stringify(_.last(this.props.history))}-${JSON.stringify(this.props.params)}`;
   }
 
-  requestSuccCallback = (res, requestParams) => {
-    let response = this.props.onResponse ? this.props.onResponse(res, requestParams) : res;
+  requestSuccCallback = (res) => {
+    // 缓存接口响应
     if (this.props.cacheKey) {
-      this.setCache(response);
+      this.setCache(res);
     }
+    let response = this.props.onResponse ? this.props.onResponse(res) : res;
     this.setState({ response: response });
     this.setLoading(false);
   }
 
-  requestErrCallback = (res, requestParams) => {
+  requestErrCallback = (res) => {
     this.setLoading(false);
   }
 
@@ -83,7 +90,7 @@ export default class Fetch extends Component {
     this.setLoading(true);
 
     // 判定队列中是否有相同请求，如果开启缓存且队列中已存在，则不在请求
-    let key = new Date().getTime();
+    let key = new Date().getTime() + Math.random();
     if (this.props.cacheKey) {
       key = this.getActuallyCacheKey();
     }
@@ -93,10 +100,10 @@ export default class Fetch extends Component {
       params = this.props.onRequest(params) || params;
       this.props.api(params)
         .then(res => {
-          requesting[key].forEach(item => item.success(res, params));
+          requesting[key].forEach(item => item.success(res));
           delete requesting[key];
         }).catch(res => {
-          requesting[key].forEach(item => item.error(res, params));
+          requesting[key].forEach(item => item.error(res));
           delete requesting[key];
         });
     }
@@ -108,9 +115,10 @@ export default class Fetch extends Component {
       return;
     }
     if (this.props.cacheKey) {
-      let response = this.getCache();
-      if (response) {
-        this.setState({ response });
+      let res = this.getCache();
+      if (res) {
+        let response = this.props.onResponse ? this.props.onResponse(res) : res;
+        this.setState({ response: response });
         return;
       }
     }
@@ -121,7 +129,7 @@ export default class Fetch extends Component {
     if (!this.props.children) {
       return null;
     }
-    
+
     let props = { loading: this.state.loading, [this.props.dataIndex]: this.state.response };
 
     if (_.isArray(this.props.children)) {

@@ -142,6 +142,8 @@ export default class Echarts extends Component {
             api={this.props.api}
             history={this.props.history}
             params={this.props.params}
+            cacheKey={this.props.cacheKey}
+            dataIndex={this.props.dataIndex}
             onRequest={this.props.onRequest}
             onResponse={this.onFetchResponse}
             onLoadingChange={loading => this.setState({ loading })}
