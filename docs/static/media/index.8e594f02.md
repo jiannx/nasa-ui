@@ -19,10 +19,21 @@
 | label     | 标题                                     | String                     | ''         |
 | dataIndex | 数据索引，未传入该参数，Item将不绑定数据 | String                     | null         |
 | rules     | 校验规则，参照[async-validator](https://github.com/yiminghe/async-validator)      | Array                      | []         |
-| decorator | 被包装的受控组建                         | Component | null       |
+| decorator | 被包装的受控组建,请勿在该组件上定义onChange和value，将会被覆盖。如需定义，请将控件写在FormItem的children中作为非受控组件                         | Component | null       |
 | required  | 当前字段是否必填                         | Boolen                     | false      |
 | trigger   | 数据变更方式                             | 'onChange' or 'onBlur'     | 'onChange' |
 | ...       | 其余参数参照Antd Form.Item               | ...                        |            |
+
+<br/>
+
+### 方法
+
+|                    名称                    |                                描述                               |
+|--------------------------------------------|-------------------------------------------------------------------|
+| validateFrom(isShowError, callback)        | 校验表单 参数: Bool是否显示错误, Func回调函数                     |
+| validate(dataIndex, isShowError, callback) | 校验某个值 参数: String校验的索引, Bool是否显示错误, Func回调函数 |
+| onSubmit                                   | 触发提交事件                                                      |
+
 
 <br/>
 
