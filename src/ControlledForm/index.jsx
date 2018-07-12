@@ -40,7 +40,7 @@ export default class ControlledForm extends Component {
   componentWillReceiveProps(nextProps) {
     // 获取整个表单校验结果
     if (this.props.onValidate && !_.isEqual(this.props.value, nextProps.value)) {
-      this.validateFrom(false, formStatus => {
+      this.validateForm(false, formStatus => {
         this.props.onValidate(formStatus);
       }, nextProps.value);
     }
@@ -49,7 +49,7 @@ export default class ControlledForm extends Component {
   componentDidMount() {
     // 初始化时获取表单校验结果
     if (this.props.onValidate) {
-      this.validateFrom(false, formStatus => {
+      this.validateForm(false, formStatus => {
         this.props.onValidate(formStatus);
       }, this.props.value);
     }
@@ -58,7 +58,7 @@ export default class ControlledForm extends Component {
   componentDidUpdate() {}
 
   // 表单校验
-  validateFrom = (isShowError = false, callback, data) => {
+  validateForm = (isShowError = false, callback, data) => {
     data = data || this.props.value;
     let result = [];
     let items = this.items.filter(x => x !== null && x !== undefined);
@@ -85,7 +85,7 @@ export default class ControlledForm extends Component {
 
   onSubmit = () => {
     let data = clone(this.props.value);
-    this.validateFrom(true, formStatus => {
+    this.validateForm(true, formStatus => {
       if (formStatus) {
         this.props.onSubmit && this.props.onSubmit(this.props.value);
       }
