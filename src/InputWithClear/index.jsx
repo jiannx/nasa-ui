@@ -18,7 +18,7 @@ export default class InputWithClear extends Component {
 
   static defaultProps = {
     iconStyle: {},
-    iocnClassName: '',
+    iconClassName: '',
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,13 +47,13 @@ export default class InputWithClear extends Component {
   render() {
     let props = { ...this.props };
     delete props.iconStyle;
-    delete props.iocnClassName;
+    delete props.iconClassName;
 
     return (
       <div className="nasa-input-with-clear">
         <Input {...props} value={this.state.value} onChange={this.onChange}></Input>
         {this.state.value && !this.props.disabled &&
-          <Icon type="close-circle-o" onClick={this.onClear} className={`nasa-input-with-clear-btn ${this.props.iocnClassName}`} style={this.props.style}/>
+          <Icon type="close-circle-o" onClick={this.onClear} className={`nasa-input-with-clear-btn ${this.props.iconClassName}`} style={this.props.iconStyle}/>
         }
       </div>
     )

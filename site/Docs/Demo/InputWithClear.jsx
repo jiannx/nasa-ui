@@ -29,7 +29,7 @@ export default class Demo extends Component {
     return (
       <div>
         <h3>普通输入框</h3>
-        <InputWithClear size="small"/>
+        <InputWithClear size="small" iconStyle={{color: 'red'}}/>
         <InputWithClear />
         <InputWithClear size="large" onChange={(e) => console.log(e.target.value)}/>
         <br/>
