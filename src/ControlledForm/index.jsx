@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Button, Icon, Checkbox, Input, Select, Switch } from 'antd';
+import { Form, Checkbox, Input, Select, Switch } from 'antd';
 import _ from 'lodash';
 import Schema from 'async-validator';
 
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
+
 Checkbox._name = 'Checkbox';
 Input._name = 'Input';
 Select._name = 'Select';

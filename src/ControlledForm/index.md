@@ -40,12 +40,15 @@
 ## 基本使用
 
 ```jsx
-import { ControlledForm } from 'nasa-ui';
+import { ControlledForm, InputWithClear } from 'nasa-ui';
+
 const FormItem = ControlledForm.Item;
+
 let formLayout = {
   labelCol: { span: 4 }, 
   wrapperCol: { span:16 }
 };
+
 <ControlledForm
   value={this.state.form1Data}
   itemProps={formLayout}
@@ -70,6 +73,12 @@ let formLayout = {
     dataIndex="require.key1"
     required
     decorator={<Input></Input>}
+  />
+  <FormItem
+    label="withClear"
+    dataIndex="require.withClear"
+    required
+    decorator={<InputWithClear/>}
   />
   <h3>校验</h3>
   <FormItem

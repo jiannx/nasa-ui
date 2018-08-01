@@ -1,0 +1,23 @@
+.nasa-input-with-clear {
+  width: 100%;
+  display: inline-block;
+  position: relative;
+
+  input {
+    padding-right: 24px;
+  }
+
+  .nasa-input-with-clear-btn {
+    // display: none;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    margin-top: -7px;
+  }
+
+  input.ant-input-disabled {
+    .nasa-input-with-clear-btn {
+      display: none;
+    }
+  }
+}

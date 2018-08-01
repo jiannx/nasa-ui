@@ -9,3 +9,4 @@ export Fetch from './Fetch';
 export ModalEx from './ModalEx';
 export SelectWithTree from './SelectWithTree';
 export ControlledForm from './ControlledForm';
+export InputWithClear from './InputWithClear';

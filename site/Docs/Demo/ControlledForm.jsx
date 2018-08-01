@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Card, Spin, Input, Button, Radio, Slider, Row, Col, InputNumber } from 'antd';
-import { ControlledForm } from 'nasa-ui';
+import { Input, Button, Radio, Slider, Row, Col, InputNumber } from 'antd';
+import { ControlledForm, InputWithClear } from 'nasa-ui';
 
 const FormItem = ControlledForm.Item;
 const RadioGroup = Radio.Group;
@@ -63,6 +63,12 @@ export default class Demo extends Component {
             dataIndex="require.key1"
             required
             decorator={<Input></Input>}
+          />
+          <FormItem
+            label="withClear"
+            dataIndex="require.withClear"
+            required
+            decorator={<InputWithClear/>}
           />
           <FormItem
             label="Radio"

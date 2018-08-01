@@ -15,6 +15,7 @@ import DemoSelectWithTree from './Demo/SelectWithTree.jsx';
 import DemoControlledForm from './Demo/ControlledForm.jsx';
 import DemoCopyTextToClipboard from './Demo/CopyTextToClipboard.jsx';
 import DemoMarkdownParserDemo from './Demo/MarkdownParser.jsx';
+import DemoInputWithClear from './Demo/InputWithClear.jsx';
 
 import Test from './test.mdx';
 
@@ -39,6 +40,7 @@ const demos = [
   { name: 'RangePickerEx', doc: 'src/RangePickerEx/index.md', demo: DemoRangePickerEx },
   { name: 'ModalEx', doc: 'src/ModalEx/index.md', demo: null },
   { name: 'Grid', doc: 'src/Grid/index.md', demo: DemoGrid },
+  { name: 'InputWithClear', doc: 'src/InputWithClear/index.md', demo: DemoInputWithClear },
   // { name: 'SelectWithTree', doc: 'src/SelectWithTree/index.md', demo: DemoSelectWithTree },
 ];
 
