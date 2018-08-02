@@ -6,6 +6,7 @@ import { Layout, Menu, Icon } from 'antd';
 import Overview from './Overview';
 import Docs from './Docs';
 import './style.scss';
+import './mock';
 
 const { Header, Content, Footer } = Layout;
 

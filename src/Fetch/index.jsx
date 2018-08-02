@@ -100,7 +100,7 @@ export default class Fetch extends Component {
       let params = Object.assign({}, _.last(this.props.history), this.props.params);
       params = this.props.onRequest(params) || params;
       console.log('request')
-      console.log(this.props.api)
+      console.log(params)
       this.props.api(params)
         .then(res => {
           console.log('=====')

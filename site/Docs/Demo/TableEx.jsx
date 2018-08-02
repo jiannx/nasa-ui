@@ -8,27 +8,11 @@ import { TableEx } from 'nasa-ui';
 function test(params) {
   return axios({
     method: 'get',
-    url: '/api/cdn/operlog',
+    url: '/mock/tableex',
     params: params,
   });
 }
 
-
-// function test(params) {
-//   return new Promise((resolve, reject) => {
-//     let res = {
-//       list: [{ name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }],
-//       pageSize: Math.ceil(Math.random() * 30),
-//       current: params.current ? params.current : Math.ceil(Math.random() * 10),
-//       total: Math.ceil(Math.random() * 100)
-//     };
-
-//     console.info('发起请求', params);
-//     setTimeout(() => {
-//       resolve(res);
-//     }, 2000);
-//   });
-// }
 
 TableEx.defaultProps.onRequest = (params) => {
   console.log('defaultProps.onRequest', params);
@@ -41,7 +25,8 @@ TableEx.defaultProps.onRequest = (params) => {
 };
 
 TableEx.defaultProps.onResponse = (res) => {
-  let data = res.data.data;
+  console.log('defaultProps.onResponse', res.data);
+  let data = res.data;
   return {
     list: data.data,
     pageSize: data.page_rows,
@@ -91,7 +76,7 @@ export default class DemoTable extends Component {
     ];
 
     let columns2 = [
-      { title: 'cdn_domain_id', dataIndex: 'cdn_domain_id', sorter: true },
+      { title: 'id', dataIndex: 'id', sorter: true },
       { title: 'project', dataIndex: 'project', sorter: true },
       { title: 'content', dataIndex: 'content', filters: [{ text: 'filter1', value: 'filter1' }, { text: 'filter2', value: 'filter2' }] },
     ];
