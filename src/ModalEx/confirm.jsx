@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Modal, Button } from 'antd';
 import _ from 'lodash';
+import locale from '../locale';
 
 const CONFIRM_OPTIONS = {
   title: '',
@@ -66,7 +67,7 @@ const confirm = (options) => {
   }
   // 是否包含取消按钮
   if (options.closeBtn === false) {
-    options.footer = <Button type={options.okType ? options.okType : 'primary'} onClick={handleOk}>{options.okText ? options.okText : '确定'}</Button>;
+    options.footer = <Button type={options.okType ? options.okType : 'primary'} onClick={handleOk}>{options.okText ? options.okText : locale.get('Determine')}</Button>;
     if (!options.className) {
       options.className = 'nasa-modal-no-close';
     } else {

@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { MarkdownParser } from 'nasa-ui';
 import marked from 'marked';
 
+import DocLocale from './DocLocale.jsx';
 import DemoEcharts from './Demo/Echarts.jsx';
 import DemoTableEx from './Demo/TableEx.jsx';
 import DemoGrid from './Demo/Grid.jsx';
@@ -92,6 +93,7 @@ export default class Doc extends Component {
                   <Menu.Item key={`/doc/${x.name}`}>{x.name}</Menu.Item>
                 )}
               </SubMenu>
+              <Menu.Item key={`/doc/locale`}><Icon type="global" />国际化</Menu.Item>
             </Menu>
           </Sider>
           <Content style={{ padding: '0 24px', minHeight: 280 }}>
@@ -115,6 +117,7 @@ export default class Doc extends Component {
                   </div>
                 }/>
               )}
+              <Route exact path={`/doc/locale`} component={DocLocale}/>
               <Route render={() => <div>404</div>}/>
             </Switch>
           </Content>

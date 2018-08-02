@@ -6,6 +6,7 @@ import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './style.scss';
+import locale from '../locale';
 
 function copyTextToClipboard(text, successCallback, failCallback) {
   let textArea = document.createElement("textarea")
@@ -30,7 +31,7 @@ export default class CopyTextToClipboard extends Component {
     text: '', // 需要复制的内容
     successCallback: null, // 复制成功回调
     failCallback: null, // 复制失败回调
-    title: '点击复制信息', // 鼠标hover文本
+    title: locale.get('Click to copy information'), // 鼠标hover文本
   }
 
   onCopy = () => {

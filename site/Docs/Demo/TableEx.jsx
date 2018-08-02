@@ -5,36 +5,48 @@ import axios from 'axios';
 import { TableEx } from 'nasa-ui';
 
 
-
 function test(params) {
-  return new Promise((resolve, reject) => {
-    let res = {
-      list: [{ name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }],
-      pageSize: Math.ceil(Math.random() * 30),
-      current: params.current ? params.current : Math.ceil(Math.random() * 10),
-      total: Math.ceil(Math.random() * 100)
-    };
-    console.info('发起请求', params);
-    setTimeout(() => {
-      resolve(res);
-    }, 2000);
+  return axios({
+    method: 'get',
+    url: '/api/cdn/operlog',
+    params: params,
   });
 }
 
+
+// function test(params) {
+//   return new Promise((resolve, reject) => {
+//     let res = {
+//       list: [{ name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }, { name: 'name' + Math.random(), pro: 'add' }],
+//       pageSize: Math.ceil(Math.random() * 30),
+//       current: params.current ? params.current : Math.ceil(Math.random() * 10),
+//       total: Math.ceil(Math.random() * 100)
+//     };
+
+//     console.info('发起请求', params);
+//     setTimeout(() => {
+//       resolve(res);
+//     }, 2000);
+//   });
+// }
+
 TableEx.defaultProps.onRequest = (params) => {
+  console.log('defaultProps.onRequest', params);
   return {
-    ...params,
     page: params.current,
-    page_rows: params.pageSize
+    page_rows: params.pageSize,
+    filters_data: params.filters,
+    sorter_data: params.sorter,
   };
 };
 
 TableEx.defaultProps.onResponse = (res) => {
+  let data = res.data.data;
   return {
-    list: res.list,
-    pageSize: res.pageSize,
-    current: res.current,
-    total: res.total,
+    list: data.data,
+    pageSize: data.page_rows,
+    current: data.page_now,
+    total: data.page_total,
   };
 };
 
@@ -42,7 +54,12 @@ export default class DemoTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: []
+      history1: [{}],
+      history2: [],
+      history3: [],
+      history4: [],
+      history5: [],
+      history6: [],
     };
   }
 
@@ -54,9 +71,9 @@ export default class DemoTable extends Component {
 
   componentWillUnmount() {}
 
-  onTestApi = () => {
+  onTestApi = (historyName, data = {}) => {
     this.setState({
-      history: this.state.history.concat([{}])
+      [historyName]: this.state[historyName].concat([data])
     });
   }
 
@@ -72,16 +89,49 @@ export default class DemoTable extends Component {
       { title: '名称2', dataIndex: 'order_id', sorter: true },
       { title: '属性', dataIndex: 'pro', filters: [{ text: 'filter1', value: 'filter1' }, { text: 'filter2', value: 'filter2' }] },
     ];
+
+    let columns2 = [
+      { title: 'cdn_domain_id', dataIndex: 'cdn_domain_id', sorter: true },
+      { title: 'project', dataIndex: 'project', sorter: true },
+      { title: 'content', dataIndex: 'content', filters: [{ text: 'filter1', value: 'filter1' }, { text: 'filter2', value: 'filter2' }] },
+    ];
+
     return (
       <div>
-        <h2>data属性</h2>
+        <h3>1. 全局配置onRequest，onResponse</h3>
+        <strong>针对项目进行全局onRequest，onResponse配置</strong><br/>
+        <strong>每个项目都应该有自己的一套分页规则</strong><br/>
+        <pre>
+{`TableEx.defaultProps.onRequest = (params) => {
+  return {
+    ...params,
+    page: params.current,
+    page_rows: params.pageSize,
+    filters_data: params.filters,
+    sorter_data: params.sorter,
+  };
+};
+
+TableEx.defaultProps.onResponse = (res) => {
+  return {
+    list: res.list,
+    pageSize: res.pageSize,
+    current: res.current,
+    total: res.total,
+  };
+};`}
+        </pre>
+
+
+        <h3>2. data属性（定义此属性时，将不发起请求）</h3>
         <TableEx
           columns={columns}
           data={data1}
-          onChange={(pagination, filters, sorter) => alert(JSON.stringify({pagination, filters, sorter}))}
+          onChange={(pagination, filters, sorter) => console.log({pagination, filters, sorter})}
         />
         <br/>
-        <h2>不包含分页</h2>
+
+        <h3>3. 不包含分页</h3>
         <TableEx
           columns={columns}
           data={data1}
@@ -89,20 +139,25 @@ export default class DemoTable extends Component {
           onChange={(pagination, filters, sorter) => console.log(pagination, filters, sorter)}
         />
         <br/>
-        <h2>异步请求 <Button onClick={this.onTestApi}>发起请求</Button></h2>
+
+        <h3>4. 请求数据 <Button onClick={this.onTestApi.bind(this, 'history1', {})}>发起请求</Button></h3>
         <TableEx
           api={test}
-          columns={columns}
-          history={this.state.history}
+          columns={columns2}
+          history={this.state.history1}
           pagination={{
             defaultPageSize: 5
           }}
         />
-        <h2>受控页码 <Button onClick={this.onTestApi}>发起请求</Button> <Button onClick={() => this.setState({currentPage: 1})}>设置页码为1</Button></h2>
+
+        <h3>5. 受控页码 
+          <Button onClick={this.onTestApi.bind(this, 'history2', {})}>发起请求</Button> 
+          <Button onClick={() => this.setState({currentPage: 1})}>设置页码为1</Button>
+        </h3>
         <TableEx
           api={test}
-          columns={columns}
-          history={this.state.history}
+          columns={columns2}
+          history={this.state.history2}
           pagination={{
             defaultPageSize: 5
           }}
@@ -112,6 +167,45 @@ export default class DemoTable extends Component {
             this.setState({currentPage: num});
           }}
         />
+
+        <h3>6. onChange </h3>
+        <p>onChange返回对象，则将此参数传入props.onRequest -> defaultProps.onRequest</p>
+        <Button onClick={this.onTestApi.bind(this, 'history3', {})}>发起请求</Button>
+        <TableEx
+          api={test}
+          columns={columns2}
+          history={this.state.history3}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          onChange={(params) => {
+            console.log('6 props.onChange')
+            return {...params, 'new': '新参数'}
+          }}
+        />
+        <p>onChange未返回对象，则按默认流程props.onRequest -> defaultProps.onRequest</p>
+        <Button onClick={this.onTestApi.bind(this, 'history4', {})}>发起请求</Button>
+        <TableEx
+          api={test}
+          columns={columns2}
+          history={this.state.history4}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          onChange={(params) => {
+            console.log('6 props.onChange')
+          }}
+        />
+
+        <h3>7. props.onRequest</h3>
+        <p>onRequest返回对象，则忽略defaultProps.onRequest，将返回对象作为请求参数</p>
+        <p>onRequest未返回对象，则按默认流程，生成&#123;current, pageSize, filters, sorter&#125;作为defaultProps.onRequest的参数</p>
+
+        
+        <h3>8. props.onResponse</h3>
+        <p>onResponse返回对象，则忽略defaultProps.onResponse，将返回对象作为表格的完整数据</p>
+        <p>onResponse未返回对象，则按默认流程，将接口响应数据作为defaultProps.onResponse的参数</p>
+
       </div>
     )
   }

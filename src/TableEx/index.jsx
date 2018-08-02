@@ -16,10 +16,13 @@ export default class TableEx extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      historyOfFetch: [],
       history: props.history,
       loading: false,
+      dataSource: [],
       pagination: Object.assign({}, PAGINATION, props.pagination || {}),
-      dataSource: []
+      filters: null,
+      sorter: null,
     };
   }
 
@@ -32,11 +35,13 @@ export default class TableEx extends Component {
     params: {}, // 该参数优先级高于histroy中参数
     onChange: (pagination, filters, sorter) => null, // 排序，过滤器等变更事件，如果返回请求参数，则以此请求参数进行获取数据
 
+    // 此参数用于控制页面
     currentPage: null, // 受控当前页码
     onCurrentPageChange: null, // 当前页码变更
 
-    onRequest: (params) => params, // 请求参数{current, pageSize}针对业务进行格式化
-    onResponse: (res, reqParams) => res, // 响应数据格式化为组件需要的格式{list: [], pageSize: 30, current: 1, total: 100}
+    // defaultProps 和组件中props将区分使用
+    onRequest: (params) => null, // 请求参数{current, pageSize}针对业务进行格式化
+    onResponse: (res, reqParams) => null, // 响应数据格式化为组件需要的格式{list: [], pageSize: 30, current: 1, total: 100}
 
     // 以下参数参照 ant table
     columns: [],
@@ -44,9 +49,12 @@ export default class TableEx extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // ！！！所有刷新入口都为 this.onChange
     // 存在外部history与当前组件内history不一致的问题
     if (nextProps.history && !_.isEqual(this.props.history, nextProps.history)) {
-      this.setState({ history: nextProps.history }); // 将直接替换掉内部history
+      this.setState({ history: nextProps.history }, () => {
+        this.onChange(this.state.pagination, this.state.filters, this.state.sorter);
+      });
     }
     // 数据未发生变更时，不做刷新
     if (nextProps.data && !_.isEqual(this.props.data, nextProps.data)) {
@@ -55,9 +63,9 @@ export default class TableEx extends Component {
     }
     // 页码变更处理
     else if (_.isNumber(this.props.currentPage) && !_.isEqual(this.props.currentPage, nextProps.currentPage)) {
-      setTimeout(() => {
-        this.refresh({ current: nextProps.currentPage })
-      })
+      this.setState({ pagination: { ...this.state.pagination, current: nextProps.currentPage } }, () => {
+        this.onChange(this.state.pagination, this.state.filters, this.state.sorter);
+      });
       return;
     }
   }
@@ -65,46 +73,82 @@ export default class TableEx extends Component {
   componentDidMount() {
     if (this.props.data) {
       this.setData(this.props.data);
+      return;
+    }
+    if (this.state.history && _.isArray(this.state.history) && this.state.history.length > 0) {
+      this.onChange(this.state.pagination, this.state.filters, this.state.sorter);
     }
   }
 
+  // 刷新，请求参数处理
   refresh = (newParams = {}, isMergeLast = true) => {
     let params = newParams;
     if (isMergeLast) {
       params = Object.assign({}, _.last(this.state.history), params);
     }
-    this.setState({ history: this.state.history.concat([params]) });
+    this.setState({ historyOfFetch: this.state.historyOfFetch.concat([params]) }, () => {
+      console.log(this.state.historyOfFetch)
+    });
+
+  }
+
+  onChangeAsPage = (pagination, filters, sorter) => {
+    // 受控页码处理, 页码不做变更，由外部控制，内部自动调整pageSize
+    if (_.isNumber(this.props.currentPage)) {
+      if (this.state.pagination.pageSize !== pagination.pageSize) {
+        let newPagination = { ...this.state.pagination };
+        newPagination.pageSize = pagination.pageSize;
+        this.setState({ pagination: newPagination }, this.refresh);
+      } else {
+        this.props.onCurrentPageChange && this.props.onCurrentPageChange(pagination.current);
+      }
+    }
+    // 非受控页码自动跳转
+    else {
+      this.setState({ pagination }, this.refresh);
+    }
+  }
+
+  onChangeAsFilterAndSorter = (pagination, filters, sorter) => {
+    // 如果onChange返回数据，则以此数据作为onRequest参数；否则请在onRequest中处理filters, sorter
+    let filterParam = this.props.onChange({
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+      filters,
+      sorter
+    });
+
+    this.setState({
+      filters,
+      sorter
+    });
+
+    if (filterParam) {
+      this.refresh(filterParam);
+    } else {
+      this.refresh({ filters, sorter }); // 当前页及页码
+    }
+  }
+
+  isPageChange = (pagination, filters, sorter) => {
+    return !_.isEqual(pagination, this.state.pagination);
   }
 
   onChange = (pagination, filters, sorter) => {
+    console.log('onChange')
+    // 非请求类型组件，则直接触发外部事件
     if (!this.props.api) {
       this.props.onChange && this.props.onChange(pagination, filters, sorter);
       return;
     }
-    // 分页状态未变更，则为过滤条件变更
-    if (_.isEqual(pagination, this.state.pagination)) {
-      let filterParam = this.props.onChange(pagination, filters, sorter);
-      if (filterParam) {
-        this.refresh(filterParam);
-      }
+    // 分页未变更，则为 过滤与排序 事件 TODO 如何真正判定是分页请求
+    if (!this.isPageChange(pagination, filters, sorter)) {
+      this.onChangeAsFilterAndSorter(pagination, filters, sorter);
+      console.log('===')
+      return;
     }
     // 分页请求
-    else {
-      // 受控页码处理, 页码不做变更，由外部控制，内部自动调整pageSize
-      if (_.isNumber(this.props.currentPage)) {
-        if (this.state.pagination.pageSize !== pagination.pageSize) {
-          let newPagination = { ...this.state.pagination };
-          newPagination.pageSize = pagination.pageSize;
-          this.setState({ pagination: newPagination }, this.refresh);
-        } else {
-          this.props.onCurrentPageChange && this.props.onCurrentPageChange(pagination.current);
-        }
-      }
-      // 非受控页码自动跳转
-      else {
-        this.setState({ pagination }, this.refresh);
-      }
-    }
+    this.onChangeAsPage(pagination, filters, sorter);
   }
 
   getData = () => {
@@ -128,17 +172,30 @@ export default class TableEx extends Component {
   }
 
   onFetchResponse = (res, requestParams) => {
-    res = this.props.onResponse(res, requestParams) || res;
+    // onResponse返回对象，则忽略defaultProps.onResponse，将返回对象作为表格的完整数据
+    // onResponse未返回对象，则按默认流程，将接口响应数据作为defaultProps.onResponse的参数
+    let selfRes = this.props.onResponse(res, requestParams);
+    if (selfRes) {
+      this.setData(selfRes);
+      return;
+    }
+    res = TableEx.defaultProps.onResponse(res, requestParams);
     this.setData(res);
   }
 
   onFetchRequest = (params) => {
     params = Object.assign({
-      pageSize: _.get(this.state, 'pagination.pageSize', this.state.pagination.defaultPageSize),
       current: this.props.currentPage ? this.props.currentPage : _.get(this.state, 'pagination.current', 1),
+      pageSize: _.get(this.state, 'pagination.pageSize', this.state.pagination.defaultPageSize),
     }, params);
-    params = this.props.onRequest(params) || params;
-    return params;
+
+    // onRequest返回对象，则忽略defaultProps.onRequest，将返回对象作为请求参数
+    // onRequest未返回对象，则按默认流程，生成{current, pageSize, filters, sorter}作为defaultProps.onRequest的参数
+    let selfParams = this.props.onRequest(params);
+    if (selfParams) {
+      return selfParams;
+    }
+    return TableEx.defaultProps.onRequest(params);
   }
 
   render() {
@@ -146,7 +203,7 @@ export default class TableEx extends Component {
       <div className={`nasa-grid ${this.props.className}`} style={this.props.style}>
         <Fetch 
           api={this.props.api}
-          history={this.state.history}
+          history={this.state.historyOfFetch}
           params={this.props.params}
           onRequest={this.onFetchRequest}
           onResponse={this.onFetchResponse}

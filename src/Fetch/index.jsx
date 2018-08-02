@@ -28,6 +28,7 @@ export default class Fetch extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEqual(this.props.history, nextProps.history)) {
+      console.log('fetch')
       setTimeout(this.getData);
     }
   }
@@ -98,8 +99,11 @@ export default class Fetch extends Component {
       requesting[key] = [];
       let params = Object.assign({}, _.last(this.props.history), this.props.params);
       params = this.props.onRequest(params) || params;
+      console.log('request')
+      console.log(this.props.api)
       this.props.api(params)
         .then(res => {
+          console.log('=====')
           requesting[key].forEach(item => item.success(res));
           delete requesting[key];
         }).catch(res => {

@@ -10,3 +10,4 @@ export ModalEx from './ModalEx';
 export SelectWithTree from './SelectWithTree';
 export ControlledForm from './ControlledForm';
 export InputWithClear from './InputWithClear';
+export locale from './locale';

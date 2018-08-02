@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Checkbox, Input, Select, Switch } from 'antd';
 import _ from 'lodash';
 import Schema from 'async-validator';
+import locale from '../locale';
 
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
@@ -206,7 +207,7 @@ class Item extends Component {
     if (!this.validator) {
       this.rules = [...this.props.rules];
       if (this.props.required === true) {
-        this.rules.push({ required: 'true', message: '必填项' });
+        this.rules.push({ required: 'true', message: locale.get('required') });
       }
       let descriptor = {
         [this.props.dataIndex]: this.rules
