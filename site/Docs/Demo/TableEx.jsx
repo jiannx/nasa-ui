@@ -21,6 +21,7 @@ TableEx.defaultProps.onRequest = (params) => {
     page_rows: params.pageSize,
     filters_data: params.filters,
     sorter_data: params.sorter,
+    data: params.data
   };
 };
 
@@ -45,6 +46,8 @@ export default class DemoTable extends Component {
       history4: [],
       history5: [],
       history6: [],
+      history7: [],
+      history8: [],
     };
   }
 
@@ -165,7 +168,7 @@ TableEx.defaultProps.onResponse = (res) => {
           }}
           onChange={(params) => {
             console.log('6 props.onChange')
-            return {...params, 'new': '新参数'}
+            return {...params, 'data': '新参数'}
           }}
         />
         <p>onChange未返回对象，则按默认流程props.onRequest -> defaultProps.onRequest</p>
@@ -184,13 +187,61 @@ TableEx.defaultProps.onResponse = (res) => {
 
         <h3>7. props.onRequest</h3>
         <p>onRequest返回对象，则忽略defaultProps.onRequest，将返回对象作为请求参数</p>
+        <Button onClick={this.onTestApi.bind(this, 'history5', {})}>发起请求</Button>
+        <TableEx
+          api={test}
+          columns={columns2}
+          history={this.state.history5}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          onRequest={(params) => {
+            console.log('7 props.onRequest')
+            return {...params, 'data': 'props.onRequest返回的参数，不再调用defaultProps.onRequest'}
+          }}
+        />
         <p>onRequest未返回对象，则按默认流程，生成&#123;current, pageSize, filters, sorter&#125;作为defaultProps.onRequest的参数</p>
-
+        <Button onClick={this.onTestApi.bind(this, 'history6', {})}>发起请求</Button>
+        <TableEx
+          api={test}
+          columns={columns2}
+          history={this.state.history6}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          onRequest={(params) => {
+            console.log('7 props.onRequest 不返回数据')
+          }}
+        />
         
         <h3>8. props.onResponse</h3>
         <p>onResponse返回对象，则忽略defaultProps.onResponse，将返回对象作为表格的完整数据</p>
+        <Button onClick={this.onTestApi.bind(this, 'history7', {})}>发起请求</Button>
+        <TableEx
+          api={test}
+          columns={columns2}
+          history={this.state.history7}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          onResponse={(params) => {
+            console.log('8 props.onResponse 返回数据');
+            return { list: [{content: 'props.onResponse 返回数据'}], current: 1, pageSize: 5, total: 1}
+          }}
+        />
         <p>onResponse未返回对象，则按默认流程，将接口响应数据作为defaultProps.onResponse的参数</p>
-
+        <Button onClick={this.onTestApi.bind(this, 'history8', {})}>发起请求</Button>
+        <TableEx
+          api={test}
+          columns={columns2}
+          history={this.state.history8}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          onResponse={(params) => {
+            console.log('8 props.onResponse 不返回数据，请求响应数据：', params);
+          }}
+        />
       </div>
     )
   }
