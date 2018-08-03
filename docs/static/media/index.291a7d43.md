@@ -3,7 +3,7 @@
 |      参数     |        说明        |  类型  | 默认值 |
 |---------------|--------------------|--------|--------|
 | iconStyle     | 图标样式           | Object | {}     |
-| iocnClassName | 图标样式           | String | ''     |
+| iconClassName | 图标样式           | String | ''     |
 | ...           | 参数参照Antd Input | ...    |        |
 
 <br/>
