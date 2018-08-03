@@ -19,7 +19,7 @@
 
 
 ## 数据流图
-![数据流](https://raw.githubusercontent.com/milolu/nasa-ui/dev/resource/table-ex-data-flow.png "数据流")
+![数据流](https://github.com/milolu/nasa-ui/blob/master/resource/table-ex-data-flow.png?raw=true "数据流")
 
 
 ## 基本使用
