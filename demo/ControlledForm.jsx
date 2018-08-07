@@ -147,6 +147,22 @@ export default class Demo extends Component {
             trigger="onBlur"
             decorator={<Input></Input>}
           />
+          
+          <FormItem
+            label="Item嵌套校验"
+            dataIndex="require.withChild"
+            required
+          >
+            <div>
+              <span>{}</span>
+              <FormItem
+                label="子组件"
+                dataIndex="require.withChild[1].child"
+                required
+                decorator={<Input></Input>}
+              />
+            </div>
+          </FormItem>
           <FormItem
             label="完整数据"
           >

@@ -6,19 +6,18 @@ import { MarkdownParser } from 'nasa-ui';
 import marked from 'marked';
 
 import DocLocale from './DocLocale.jsx';
-import DemoEcharts from './Demo/Echarts.jsx';
-import DemoTableEx from './Demo/TableEx.jsx';
-import DemoGrid from './Demo/Grid.jsx';
-import DemoInterval from './Demo/Interval.jsx';
-import DemoRangePickerEx from './Demo/RangePickerEx.jsx';
-import DemoFetch from './Demo/Fetch.jsx';
-import DemoSelectWithTree from './Demo/SelectWithTree.jsx';
-import DemoControlledForm from './Demo/ControlledForm.jsx';
-import DemoCopyTextToClipboard from './Demo/CopyTextToClipboard.jsx';
-import DemoMarkdownParserDemo from './Demo/MarkdownParser.jsx';
-import DemoInputWithClear from './Demo/InputWithClear.jsx';
-
-import Test from './test.mdx';
+import {
+  DemoEcharts,
+  DemoTableEx,
+  DemoGrid,
+  DemoInterval,
+  DemoRangePickerEx,
+  DemoFetch,
+  DemoControlledForm,
+  DemoCopyTextToClipboard,
+  DemoMarkdownParserDemo,
+  DemoInputWithClear,
+} from '../../Demo';
 
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;

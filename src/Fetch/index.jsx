@@ -11,7 +11,8 @@ export default class Fetch extends Component {
     super(props);
     this.state = {
       loading: false,
-      response: {}
+      response: {},
+      history: props.history
     };
   }
 
@@ -27,9 +28,11 @@ export default class Fetch extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(this.props.history, nextProps.history)) {
+    if (!_.isEqual(this.state.history, nextProps.history)) {
       console.log('Fetch componentWillReceiveProps')
-      setTimeout(this.getData);
+      this.setState({ history: nextProps.history }, () => {
+        this.getData();
+      });
     }
   }
 
@@ -70,7 +73,7 @@ export default class Fetch extends Component {
    * @return {[type]} [description]
    */
   getActuallyCacheKey = () => {
-    return `${JSON.stringify(this.props.cacheKey)}-${JSON.stringify(_.last(this.props.history))}-${JSON.stringify(this.props.params)}`;
+    return `${JSON.stringify(this.props.cacheKey)}-${JSON.stringify(_.last(this.state.history))}-${JSON.stringify(this.props.params)}`;
   }
 
   requestSuccCallback = (res) => {
@@ -78,8 +81,8 @@ export default class Fetch extends Component {
     if (this.props.cacheKey) {
       this.setCache(res);
     }
-    let response = this.props.onResponse ? this.props.onResponse(res) : res;
-    this.setState({ response: response });
+    this.props.onResponse && this.props.onResponse(res)
+    this.setState({ response: res });
     this.setLoading(false);
   }
 
@@ -97,7 +100,7 @@ export default class Fetch extends Component {
     }
     if (!requesting[key]) {
       requesting[key] = [];
-      let params = Object.assign({}, _.last(this.props.history), this.props.params);
+      let params = Object.assign({}, _.last(this.state.history), this.props.params);
       params = this.props.onRequest(params) || params;
       this.props.api(params)
         .then(res => {
@@ -112,14 +115,13 @@ export default class Fetch extends Component {
   }
 
   getData = () => {
-    if (!this.props.api || !_.isArray(this.props.history) || this.props.history.length === 0) {
+    if (!this.props.api || !_.isArray(this.state.history) || this.state.history.length === 0) {
       return;
     }
     if (this.props.cacheKey) {
       let res = this.getCache();
       if (res) {
-        let response = this.props.onResponse ? this.props.onResponse(res) : res;
-        this.setState({ response: response });
+        this.props.onResponse && this.props.onResponse(res);
         return;
       }
     }
