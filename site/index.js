@@ -7,6 +7,10 @@ import Overview from './Overview';
 import Docs from './Docs';
 import './style.scss';
 import './mock';
+import 'moment/locale/zh-cn';
+import moment from 'moment';
+
+moment.locale('zh-cn');
 
 const { Header, Content, Footer } = Layout;
 
