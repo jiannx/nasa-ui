@@ -33,7 +33,7 @@ export default class TableEx extends Component {
     api: null, // 接口，当传入该参数时，请勿传入data。 () => {}
     history: [], // 该字段用于刷新表格数据，当向该字段中插入请求参数时，重新请求刷新表格。api参数必填
     params: {}, // 该参数优先级高于histroy中参数
-    onChange: (pagination, filters, sorter) => null, // 排序，过滤器等变更事件，如果返回请求参数，则以此请求参数进行获取数据
+    onChange: ({ pagination, filters, sorter }) => null, // 排序，过滤器等变更事件，如果返回请求参数，则以此请求参数进行获取数据
 
     // 此参数用于控制页面
     currentPage: null, // 受控当前页码
@@ -121,7 +121,13 @@ export default class TableEx extends Component {
 
     // 非请求类型组件，则直接触发外部事件
     if (!this.props.api) {
-      this.props.onChange && this.props.onChange(pagination, filters, sorter);
+      let params = {
+        current: pagination.current,
+        pageSize: pagination.pageSize || pagination.defaultPageSize,
+        filters,
+        sorter
+      };
+      this.props.onChange && this.props.onChange(params);
       return;
     }
     // 分页受控且分页变更事件，触发外部 onCurrentPageChange

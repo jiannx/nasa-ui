@@ -121,11 +121,17 @@ export default class Demo extends Component {
             decorator={<Input></Input>}
             rules={[
               { validator(rule, value, callback, source, options) {
+                console.log(value)
+                  if(value === ''){
+                    callback([]);
+                  }
                   try {
                     JSON.parse(value);
                     callback();
                   } catch(err) {
-                    callback(['请填写正确的json参数']);
+                    setTimeout(() => {
+                      callback(['请填写正确的json参数']);
+                    }, 1000);
                   }
                 }
               }
