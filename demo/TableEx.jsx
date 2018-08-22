@@ -157,7 +157,7 @@ TableEx.defaultProps.onResponse = (res) => {
         />
 
         <h3>6. onChange </h3>
-        <p>onChange返回对象，则将此参数传入props.onRequest -> defaultProps.onRequest</p>
+        <p>onChange返回false，则结束自动刷新流程</p>
         <Button onClick={this.onTestApi.bind(this, 'history3', {})}>发起请求</Button>
         <TableEx
           api={test}
@@ -168,10 +168,10 @@ TableEx.defaultProps.onResponse = (res) => {
           }}
           onChange={(params) => {
             console.log('6 props.onChange')
-            return {...params, 'data': '新参数'}
+            return false;
           }}
         />
-        <p>onChange未返回对象，则按默认流程props.onRequest -> defaultProps.onRequest</p>
+        <p>onChange未返回对象，则按默认流程触发 props.onRequest 或 defaultProps.onRequest</p>
         <Button onClick={this.onTestApi.bind(this, 'history4', {})}>发起请求</Button>
         <TableEx
           api={test}

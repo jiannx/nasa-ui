@@ -11,9 +11,10 @@
 |params | Object 请求参数，将优先于history | Object | {} |
 |currentPage | 定义此参数，页码将受控外部 | Number | null |
 |onCurrentPageChange | 当前页码变更，与上一参数组合使用 | Function | null |
-|onChange | 排序，过滤器等变更事件，如果该事件返回数据，则以此请求参数传入onRequest；否则为默认参数 | Function(pagination, filters, sorter) | null |
-|onRequest | 请求参数格式化，带有current, pageSize, filters, sorter属性，如需请针对业务进行格式化 | Function | params => params |
-|onResponse |  响应数据格式化为组件需要的基础格式{list, pageSize, current, total} | Function | (res, reqParams) => res |
+|onChange | 排序，过滤，页码变更事件，如果onChange返回false，则停止刷新 | Function({pagination, filters, sorter}) | null |
+|onProcessParam | 调用onRequest前请求数据处理，请返回参数 | Function({ pagination, filters, sorter, ..._.last(history) }) | null |
+|onRequest | 请求参数{current, pageSize, filters, sorter}针对业务进行格式化，一般为全局配置 | Function | params => params |
+|onResponse |  响应数据格式化为组件需要的基础格式{list, pageSize, current, total}，一般为全局配置 | Function | (res, reqParams) => res |
 |pagination | 分页配置项 | Object or bool | { defaultPageSize: 30, defaultCurrent: 1, current: 1,showSizeChanger: true,showQuickJumper: true } |
 |... | 其余参数参照Antd Table | ... | 
 
@@ -144,7 +145,7 @@ onTestApi = (historyName, data = {}) => {
 />
 
 <h3>6. onChange </h3>
-<p>onChange返回对象，则将此参数传入props.onRequest -> defaultProps.onRequest</p>
+<p>onChange返回false，则结束自动刷新流程</p>
 <Button onClick={this.onTestApi.bind(this, 'history3', {})}>发起请求</Button>
 <TableEx
   api={test}
@@ -155,10 +156,10 @@ onTestApi = (historyName, data = {}) => {
   }}
   onChange={(params) => {
     console.log('6 props.onChange')
-    return {...params, 'data': '新参数'}
+    return false;
   }}
 />
-<p>onChange未返回对象，则按默认流程props.onRequest -> defaultProps.onRequest</p>
+<p>onChange未返回对象，则按默认流程触发 props.onRequest 或 defaultProps.onRequest</p>
 <Button onClick={this.onTestApi.bind(this, 'history4', {})}>发起请求</Button>
 <TableEx
   api={test}
