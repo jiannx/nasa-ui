@@ -204,7 +204,8 @@ class Item extends Component {
       status: 'success',
       message: ''
     };
-    if (!this.validator) {
+    // 添加删除节点时组件复用但是dataIndex变更，校验前再次确认规则中key值是否与dataIndex一致
+    if (!this.validator || !_.get(this.validator, `rules.${this.props.dataIndex}`)) {
       this.rules = [...this.props.rules];
       if (this.props.required === true) {
         this.rules.push({ required: 'true', message: locale.get('required') });
