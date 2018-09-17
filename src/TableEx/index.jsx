@@ -175,6 +175,7 @@ export default class TableEx extends Component {
       return;
     }
     this.setState({
+      data,
       pagination: Object.assign({}, this.state.pagination, {
         current: _.get(data, 'current', 1),
         pageSize: _.get(data, 'pageSize', this.state.pagination.defaultPageSize),
@@ -182,6 +183,11 @@ export default class TableEx extends Component {
       }),
       dataSource
     });
+  }
+
+  setRowData = (rowIndex, data) => {
+    _.set(this.state.data, `list[${rowIndex}]`, data);
+    this.setState({ data: this.state.data });
   }
 
   onFetchRequest = (params) => {

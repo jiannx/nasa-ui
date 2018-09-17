@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Layout, Menu, Breadcrumb, Icon, Button } from 'antd';
+import { Layout, Menu, Breadcrumb, Icon, Button, Input } from 'antd';
 import axios from 'axios';
 import { TableEx } from 'nasa-ui';
 
@@ -48,6 +48,7 @@ export default class DemoTable extends Component {
       history6: [],
       history7: [],
       history8: [],
+      history9: []
     };
   }
 
@@ -63,6 +64,11 @@ export default class DemoTable extends Component {
     this.setState({
       [historyName]: this.state[historyName].concat([data])
     });
+  }
+
+  onInputChange = (value, index, record, key) => {
+    record[key] = value;
+    this.table9.setRowData(index, record);
   }
 
   render() {
@@ -83,6 +89,12 @@ export default class DemoTable extends Component {
       { title: 'project', dataIndex: 'project', sorter: true },
       { title: 'content', dataIndex: 'content', filters: [{ text: 'filter1', value: 'filter1' }, { text: 'filter2', value: 'filter2' }] },
     ];
+
+    let columns9 = [
+      { title: 'id', dataIndex: 'id', sorter: true },
+      { title: 'project', dataIndex: 'project', sorter: true },
+      { title: 'content', dataIndex: 'content', render: (text, record, index) => <Input value={record.content} onChange={e => this.onInputChange(e.target.value, index, record, 'content')}></Input> },
+    ]
 
     return (
       <div>
@@ -241,6 +253,19 @@ TableEx.defaultProps.onResponse = (res) => {
           onResponse={(params) => {
             console.log('8 props.onResponse 不返回数据，请求响应数据：', params);
           }}
+        />
+
+        <h3>9. 主动设置行数据</h3>
+        <Button onClick={this.onTestApi.bind(this, 'history9', {})}>发起请求</Button>
+        <Button onClick={() => console.log(this.table9.getData())}>获取内部完整数据</Button>
+        <TableEx
+          api={test}
+          columns={columns9}
+          history={this.state.history9}
+          pagination={{
+            defaultPageSize: 5
+          }}
+          ref={ handle => this.table9 = handle }
         />
       </div>
     )

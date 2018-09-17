@@ -18,6 +18,16 @@
 |pagination | 分页配置项 | Object or bool | { defaultPageSize: 30, defaultCurrent: 1, current: 1,showSizeChanger: true,showQuickJumper: true } |
 |... | 其余参数参照Antd Table | ... | 
 
+<br/>
+
+### 方法
+|                      名称                     |                    描述                    |
+|-----------------------------------------------|--------------------------------------------|
+| getData()                                     | 获取当前表格完整数据，包含分页信息         |
+| setData({list: [], current, pageSize, total}) | 设置当前表格完整数据                       |
+| setRowData(rowIndex, rowData)                 | 设置单行数据， rowIndex行号，rowData行数据 |
+
+<br/>
 
 ## 数据流图
 ![数据流](https://github.com/milolu/nasa-ui/blob/master/resource/table-ex-data-flow.png?raw=true "数据流")
