@@ -59,7 +59,10 @@ export default class TableEx extends Component {
     }
     // 存在外部history与当前组件内history不一致的问题
     if (nextProps.history && !_.isEqual(this.props.history, nextProps.history)) {
-      this.setState({ history: nextProps.history }, () => {
+      this.setState({
+        pagination: { ...this.state.pagination, current: nextProps.currentPage },
+        history: nextProps.history
+      }, () => {
         this.onHistoryChange();
       });
       return;
@@ -67,7 +70,8 @@ export default class TableEx extends Component {
     // 页码变更处理
     if (_.isNumber(this.props.currentPage) && !_.isEqual(this.props.currentPage, nextProps.currentPage)) {
       this.setState({
-        pagination: { ...this.state.pagination, current: nextProps.currentPage }
+        pagination: { ...this.state.pagination, current: nextProps.currentPage },
+        history: nextProps.history
       }, () => {
         this.onPageNumberChange();
       });

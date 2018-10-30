@@ -1,6 +1,6 @@
 {
   "name": "nasa-ui",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "description": "NETS Nasa front-end Component Library, base on antd",
   "homepage": "https://github.com/milolu/nasa-ui#readme",
   "main": "lib/index.js",
@@ -11,7 +11,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build-clean": "node scripts/build-clean.js",
-    "build": "SET NODE_ENV=production&& npm run build-clean && babel src --out-dir lib --source-maps --extensions .es6,.es,.jsx,.js --copy-files --presets=react-app,stage-0",
+    "build": "export NODE_ENV=production&& npm run build-clean && babel src --out-dir lib --source-maps --extensions .es6,.es,.jsx,.js --copy-files --presets=react-app,stage-0",
     "doc": "node scripts/doc.js",
     "push": "npm run build && npm publish",
     "test": "node scripts/test.js --env=jsdom"
