@@ -17,7 +17,7 @@ import {
   DemoCopyTextToClipboard,
   DemoMarkdownParserDemo,
   DemoInputWithClear,
-} from '../../Demo';
+} from '../../demo/index.js';
 
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;

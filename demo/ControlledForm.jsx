@@ -116,22 +116,16 @@ export default class Demo extends Component {
             ]}
           />
           <FormItem
-            label="自定义规则2 json"
+            label="自定义规则2 数值"
             dataIndex="rule2"
             decorator={<Input></Input>}
             rules={[
               { validator(rule, value, callback, source, options) {
-                console.log(value)
-                  if(value === ''){
-                    callback([]);
-                  }
-                  try {
-                    JSON.parse(value);
+                  // console.log(value)
+                  if(/^\d*$/.test(value)){
                     callback();
-                  } catch(err) {
-                    setTimeout(() => {
-                      callback(['请填写正确的json参数']);
-                    }, 1000);
+                  }else{
+                    callback(['请填写正确的数值']);
                   }
                 }
               }
@@ -178,7 +172,17 @@ export default class Demo extends Component {
             wrapperCol={{span: 12, offset: 4}}
           >
             <Button type="primary" htmlType="submit" disabled={!this.state.form1Status}>确定1</Button>&nbsp;
-            <Button type="primary" htmlType="submit">确定2</Button>
+            <Button type="primary" htmlType="submit">确定2</Button>&nbsp;
+            <Button 
+              type="primary" 
+              onClick={() => {
+                this.setState({
+                  form1Data: {...this.state.form1Data, rule1: 'heheh'}
+                })
+              }}
+            >
+              设置 自定义规则1 = hehe
+            </Button>
             <br/>
             <Button onClick={() => this.form1.validateForm(true)}>手动校验 全局表单</Button>
             <br/>

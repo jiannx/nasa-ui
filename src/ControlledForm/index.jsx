@@ -14,14 +14,15 @@ TextArea._name = 'TextArea';
 
 function isInstanceOfClass(instance, classConstructor) {
   if (_.isPlainObject(instance) && _.isFunction(instance.type)) {
-    return instance.type === classConstructor;
+    return instance.type === classConstructor || instance.type.__proto__ === classConstructor;
   }
   return false;
 }
 
 // todo性能优化
 function clone(data, key) {
-  return _.cloneDeep(data);
+  return { ...data };
+  // return _.cloneDeep(data);
 }
 
 export default class ControlledForm extends Component {
@@ -39,25 +40,12 @@ export default class ControlledForm extends Component {
     itemProps: null,
   }
 
-  componentWillReceiveProps(nextProps) {
-    // 获取整个表单校验结果
-    if (this.props.onValidate && !_.isEqual(this.props.value, nextProps.value)) {
-      this.validateForm(false, formStatus => {
-        this.props.onValidate(formStatus);
-      }, nextProps.value);
-    }
+  componentWillMount() {
+    this.onCheckFormValidateHandler = _.debounce(this.onCheckFormValidate, 100);
   }
 
   componentDidMount() {
-    // 初始化时获取表单校验结果
-    if (this.props.onValidate) {
-      this.validateForm(false, formStatus => {
-        this.props.onValidate(formStatus);
-      }, this.props.value);
-    }
   }
-
-  componentDidUpdate() {}
 
   // 表单校验
   validateForm = (isShowError = false, callback, data) => {
@@ -83,6 +71,13 @@ export default class ControlledForm extends Component {
     if (item) {
       item.checkValidate(_.get(this.props.value, dataIndex), isShowError, callback);
     }
+  }
+
+  onCheckFormValidate = () => {
+    // console.log('!!!!!----')
+    let items = this.items.filter(x => x !== null && x !== undefined);
+    let result = items.map(x => x.validateStatus);
+    this.props.onValidate && this.props.onValidate(result.every(x => x.status === 'success'), result);
   }
 
   onSubmit = () => {
@@ -127,9 +122,10 @@ export default class ControlledForm extends Component {
           ref: item => {
             item && this.items.push(item);
           },
-          data: this.props.value,
+          value: _.get(this.props.value, element.props.dataIndex),
           emitChange: this.onItemChange.bind(this),
-          itemProps: this.props.itemProps
+          itemProps: this.props.itemProps,
+          onCheckFormValidateHandler: this.onCheckFormValidateHandler
         }, children));
       }
       // 表单控件 非受控处理
@@ -156,7 +152,7 @@ export default class ControlledForm extends Component {
     this.items = [];
     let children = this.deepClone(this.props.children);
     return (
-      <Form className={this.props.className}>
+      <Form layout={this.props.layout} className={this.props.className}>
         {children}
       </Form>
     )
@@ -184,6 +180,8 @@ class Item extends Component {
       focusing: false, // 捕获焦点
       stashValue: undefined, // 暂存数据
     };
+    this.validateStatus = null; // 用于组件存储校验状态
+    this.inputValue = null; // 存储onchange输入的值，在下一次进入校验时，显示错误信息
   }
 
   static defaultProps = {
@@ -195,7 +193,33 @@ class Item extends Component {
     trigger: 'onChange',
   }
 
-  componentDidMount() {}
+  componentWillReceiveProps(nextProps) {
+    // 数据变更，重新获取校验状态
+    if (nextProps.value !== this.props.value) {
+      let showError = false;
+      // @todo 确定是否会存在bug，当前判断逻辑：判断本次数据和刷新前用户输入数据是否一致，如果一致，则判定为需要显示错误框；否则不显示错误信息
+      if (this.inputValue !== null && this.inputValue === nextProps.value) {
+        showError = true;
+      }
+      this.checkValidate(nextProps.value, showError, this.props.onCheckFormValidateHandler);
+    }
+    this.inputValue = null;
+  }
+
+  componentDidMount() {
+    this.checkValidate(this.props.value, false, this.props.onCheckFormValidateHandler)
+  }
+
+  checkValidateCallback = (result, isShowError = true, callback) => {
+    this.validateStatus = result;
+    callback && callback(result);
+    if (isShowError) {
+      this.setState({
+        validateStatus: result.status,
+        help: result.message
+      });
+    }
+  }
 
   //数据校验及是否显示校验
   checkValidate = (value, isShowError = true, callback) => {
@@ -204,6 +228,11 @@ class Item extends Component {
       status: 'success',
       message: ''
     };
+    // 未添加任何校验条件的情况
+    if (this.props.rules.length === 0 && this.props.required !== true) {
+      this.checkValidateCallback(result, isShowError, callback);
+      return;
+    }
     // 添加删除节点时组件复用但是dataIndex变更，校验前再次确认规则中key值是否与dataIndex一致
     if (!this.validator || !_.get(this.validator, `rules.${this.props.dataIndex}`)) {
       this.rules = [...this.props.rules];
@@ -214,10 +243,6 @@ class Item extends Component {
         [this.props.dataIndex]: this.rules
       };
       this.validator = new Schema(descriptor);
-    }
-    if (this.rules.length === 0) {
-      callback && callback(result);
-      return;
     }
     this.validator.validate({
       [this.props.dataIndex]: value
@@ -230,23 +255,15 @@ class Item extends Component {
           errors: errors
         };
       }
-      if (isShowError) {
-        this.setState({
-          validateStatus: result.status,
-          help: result.message
-        });
-      }
-      callback && callback(result);
+      this.checkValidateCallback(result, isShowError, callback);
     });
   }
 
   onChange = (e) => {
     let value = getValueFromEvent(e);
-    this.checkValidate(value);
-    // 触发数据变更
+    this.inputValue = value;
     this.props.emitChange(this.props.dataIndex, value);
   }
-
 
   // onBlur 下暂存变更
   onStashChange = (e) => {
@@ -262,7 +279,7 @@ class Item extends Component {
 
   onFocus = (e) => {
     this.props.onFocus && this.props.onFocus(e);
-    this.setState({ stashValue: _.get(this.props.data, this.props.dataIndex) });
+    this.setState({ stashValue: this.props.value });
     this.setState({ focusing: true });
   }
 
@@ -270,7 +287,7 @@ class Item extends Component {
     if (!element) {
       return null;
     }
-    let value = _.get(this.props.data, this.props.dataIndex);
+    let value = this.props.value;
     let props = {
       [(isInstanceOfClass(element, Switch) || isInstanceOfClass(element, Checkbox)) ? 'checked' : 'value']: value,
       [this.props.trigger]: this.onChange
