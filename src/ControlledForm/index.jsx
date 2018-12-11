@@ -14,7 +14,7 @@ TextArea._name = 'TextArea';
 
 function isInstanceOfClass(instance, classConstructor) {
   if (_.isPlainObject(instance) && _.isFunction(instance.type)) {
-    return instance.type === classConstructor || instance.type.__proto__ === classConstructor;
+    return instance.type === classConstructor || _.get(instance, 'type.__proto__') === classConstructor;
   }
   return false;
 }
@@ -26,11 +26,6 @@ function clone(data, key) {
 }
 
 export default class ControlledForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   static defaultProps = {
     className: '',
     onSubmit: null, // 提交事件，进行校验
@@ -40,12 +35,17 @@ export default class ControlledForm extends Component {
     itemProps: null,
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentWillMount() {
     this.onCheckFormValidateHandler = _.debounce(this.onCheckFormValidate, 100);
   }
 
-  componentDidMount() {
-  }
+  // componentDidMount() {
+  // }
 
   // 表单校验
   validateForm = (isShowError = false, callback, data) => {
@@ -57,7 +57,7 @@ export default class ControlledForm extends Component {
       result.push(res);
       if (result.length === items.length) {
         // 触发外部事件
-        callback && callback(result.every(x => x.status === 'success'), result)
+        callback && callback(result.every(x => x.status === 'success'), result);
       }
     };
     for (let node of items) {
@@ -155,7 +155,7 @@ export default class ControlledForm extends Component {
       <Form layout={this.props.layout} className={this.props.className}>
         {children}
       </Form>
-    )
+    );
   }
 }
 
@@ -172,6 +172,15 @@ function getValueFromEvent(e) {
 }
 
 class Item extends Component {
+  static defaultProps = {
+    label: null,
+    dataIndex: null,
+    rules: [],
+    decorator: null,
+    required: false,
+    trigger: 'onChange',
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -184,13 +193,8 @@ class Item extends Component {
     this.inputValue = null; // 存储onchange输入的值，在下一次进入校验时，显示错误信息
   }
 
-  static defaultProps = {
-    label: null,
-    dataIndex: null,
-    rules: [],
-    decorator: null,
-    required: false,
-    trigger: 'onChange',
+  componentDidMount() {
+    this.checkValidate(this.props.value, false, this.props.onCheckFormValidateHandler);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -206,10 +210,6 @@ class Item extends Component {
     this.inputValue = null;
   }
 
-  componentDidMount() {
-    this.checkValidate(this.props.value, false, this.props.onCheckFormValidateHandler)
-  }
-
   checkValidateCallback = (result, isShowError = true, callback) => {
     this.validateStatus = result;
     callback && callback(result);
@@ -221,7 +221,7 @@ class Item extends Component {
     }
   }
 
-  //数据校验及是否显示校验
+  // 数据校验及是否显示校验
   checkValidate = (value, isShowError = true, callback) => {
     let result = {
       dataIndex: this.props.dataIndex,
@@ -315,7 +315,7 @@ class Item extends Component {
         {decorator}
         {this.props.children}
       </FormItem>
-    )
+    );
   }
 }
 
